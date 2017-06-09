@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>
+    {% block title %} Welcome{% if session.logged_in %}{{ username }}{% endif %}{% endblock %} | Gerrit QuickViewer
+  </title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="wrapper">
+  <a href="{{ url_for('index') }}"><h1>Gerrit QuickViewer - {% block url %}{{ gerrit_url }} [{{ gerrit_version }}]{% endblock %}</h1></a>
+  <div class="navbar">
+    <div class="menu">
+      <a href="#">Accounts</a> |
+      <a href="#">Projects</a> |
+      <a href="#">Groups</a> |
+      <a href="{{ url_for('plugins') }}">Plugins</a>
+    </div>
+    Welcome,
+    {% if not session.logged_in %}
+      <strong>anonymous</strong> |
+      <a href="{{ url_for('login') }}">log in</a>
+    {% else %}
+      <strong> {{ username }} </strong> |
+      <a href="{{ url_for('logout') }}">log out</a>
+    {% endif %}
+  </div>
+  {% block body %}{% endblock %}
+</div>
+</body>
+</html>

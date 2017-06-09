@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}Sign In{% endblock %}
+{% block url %}{{ gerrit_url }} [{{ gerrit_version }}]{% endblock %}
+{% block body %}
+  <p class="note">
+    <strong>Note:</strong> Specify your <i>username</i> and <i>password</i> from Gerrit user account (Settings &#8594; HTTP password).
+  </p>
+  {% if error %}<div class="error"><strong>Error:</strong> {{ error }}</div>{% endif %}
+  <form action="" method="post" class="form-style">
+    <h2>Gerrit HTTP authentication credentials</h2>
+    <dl>
+      <dt>Username:
+      <dd><input type="text" name="username" size="30" value="{{ request.form.username }}">
+      <dt>Password:
+      <dd><input type="password" name="password" size="30">
+    </dl>
+    <div class="actions"><input type="submit" value="Sign In"></div>
+  </form>
+{% endblock %}
+

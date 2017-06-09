@@ -1,2 +1,1 @@
-# gerrit-view
-Gerrit info web-panel
+# gerrit-quick-viewer

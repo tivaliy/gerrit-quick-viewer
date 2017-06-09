@@ -1,0 +1,10 @@
+{% extends "index.html" %}
+{% block entries %}
+  <ul class="entries">
+    {% for plugin_name, plugin_details in entries.items() %}
+      <li>{{ plugin_name }} (<em>{{ plugin_details['version'] }}</em>)</li>
+    {% else %}
+      <li><em>No entries here so far</em></li>
+    {% endfor %}
+  </ul>
+{% endblock %}
