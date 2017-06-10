@@ -69,9 +69,10 @@ def logout():
 
 
 @app.route('/plugins')
-def plugins():
+@app.route('/plugins/<plugin_id>')
+def plugins(plugin_id=None):
     gerrit_version, error = get_version()
-    gerrit_plugins = None
+    gerrit_plugins, plugin = None, None
     username = session.get('username')
     password = session.get('password')
     connection = client.connect(GERRIT_URL,
@@ -80,6 +81,8 @@ def plugins():
     plugin_client = client.get_client('plugin', connection=connection)
     try:
         gerrit_plugins = plugin_client.get_all()
+        if plugin_id:
+            plugin = plugin_client.get_by_id(plugin_id)
     except (requests.ConnectionError, client_error.HTTPError) as error:
         app.logger.error(error)
     return render_template('plugin.html',
@@ -88,7 +91,9 @@ def plugins():
                            gerrit_url=GERRIT_URL,
                            gerrit_version=gerrit_version,
                            entry_category='plugins',
-                           entries=gerrit_plugins)
+                           entries=gerrit_plugins,
+                           entry_item=plugin,
+                           entry_item_name=plugin['id'] if plugin else None)
 
 
 def get_version():

@@ -1,10 +1,25 @@
 {% extends "index.html" %}
 {% block entries %}
   <ul class="entries">
+        <li class="tbl_header">Installed Plugins</li>
     {% for plugin_name, plugin_details in entries.items() %}
-      <li>{{ plugin_name }} (<em>{{ plugin_details['version'] }}</em>)</li>
+      <li>
+        <a href="{{ url_for('plugins', plugin_id=plugin_name) }}">
+          {{ plugin_name }} (<em>{{ plugin_details['version'] }}</em>)
+        </a>
+      </li>
     {% else %}
       <li><em>No entries here so far</em></li>
     {% endfor %}
   </ul>
+    {% if entry_item %}
+      <ul class="entries">
+        <li class="tbl_header">{{ entry_item_name }}</li>
+        {% for k, v in entry_item.items() %}
+          <li>
+            <div class="item">{{ k }}</div><i>&nbsp;{{ v }}</i>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
 {% endblock %}

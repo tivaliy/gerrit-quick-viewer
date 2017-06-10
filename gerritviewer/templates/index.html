@@ -2,7 +2,8 @@
 {% block body %}
   <h2>
     <a href="{{ url_for('index') }}">Gerrit Viewer Panel</a>
-    {% if entry_category %} &#8594; <a href="{{ entry_category }}">{{ entry_category|capitalize }}</a> {% endif %}
+    {% if entry_category %} &#8594; <a href="{{ url_for(entry_category) }}">{{ entry_category|capitalize }}</a> {% endif %}
+    {% if entry_item %} &#8594; <a href="{{ entry_item_name }}">{{ entry_item_name }}</a> {% endif %}
   </h2>
   <p class="note">
     <strong>Note:</strong> Ability to perform <i>View</i>, <i>Modify</i>, <i>Delete</i> or <i>Create</i> actions depends on
@@ -10,6 +11,6 @@
   </p>
   {% if error %}<p class="error"><strong>Error:</strong> {{ error }}</p>{% endif %}
   {% if entries %}
-    {% block entries %}{% endblock %}
+    <div class="content">{% block entries %}{% endblock %}</div>
   {% endif %}
 {% endblock %}
