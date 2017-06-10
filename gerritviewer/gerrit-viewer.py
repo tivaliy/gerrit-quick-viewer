@@ -71,6 +71,7 @@ def logout():
 @app.route('/plugins')
 @app.route('/plugins/<plugin_id>')
 def plugins(plugin_id=None):
+    action = request.args.get('action')
     gerrit_version, error = get_version()
     gerrit_plugins, plugin = None, None
     username = session.get('username')
@@ -79,10 +80,16 @@ def plugins(plugin_id=None):
                                 username=username,
                                 password=password)
     plugin_client = client.get_client('plugin', connection=connection)
+    plugin_actions = {'enable': plugin_client.enable,
+                      'disable': plugin_client.disable,
+                      'reload': plugin_client.reload}
     try:
-        gerrit_plugins = plugin_client.get_all()
+        gerrit_plugins = plugin_client.get_all(detailed=True)
         if plugin_id:
             plugin = plugin_client.get_by_id(plugin_id)
+            if action:
+                plugin_actions[action](plugin_id)
+                return redirect(url_for('plugins', plugin_id=plugin_id))
     except (requests.ConnectionError, client_error.HTTPError) as error:
         app.logger.error(error)
     return render_template('plugin.html',

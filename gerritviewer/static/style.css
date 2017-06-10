@@ -149,6 +149,18 @@ dd {
     padding: 5px 10px;
 }
 
+.entries li.disabled {
+    background: #FF4C4C;
+}
+
+.entries a {
+    color: #000000;
+}
+
+.entries a:hover {
+    text-decoration: underline;
+}
+
 .entries em {
     font-size: 0.8em;
     font-weight: bold;
@@ -165,7 +177,22 @@ dd {
     width: 80px;
     float: left;
     padding-right: 15px;
+    margin-right: 10px;
     display: inline-block;
     border-right: 1px solid #377BA8;
     font-weight: 700;
+}
+
+.entries a.button {
+    display: inline-block;
+    background: #377BA8;
+    color: #EEEEEE;
+    cursor: pointer;
+    padding: 5px 15px;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.entries a.button:hover {
+    background: #3D228E;
 }

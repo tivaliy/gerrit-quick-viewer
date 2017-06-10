@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>
-    {% block title %} Welcome{% if session.logged_in %}{{ username }}{% endif %}{% endblock %} | Gerrit QuickViewer
+    {% block title %} Welcome{% if session.logged_in %} {{ username }}{% endif %}{% endblock %} | Gerrit QuickViewer
   </title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
