@@ -30,6 +30,15 @@ app.config.update(dict(
 ))
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    gerrit_version, error = get_version()
+    return render_template('404.html',
+                           error=e or error,
+                           gerrit_url=GERRIT_URL,
+                           gerrit_version=gerrit_version), 404
+
+
 @app.route('/')
 def index():
     username = session.get('username')
