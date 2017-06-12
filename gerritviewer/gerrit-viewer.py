@@ -77,21 +77,35 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/plugins')
+@app.route('/plugins', methods=['GET', 'POST'])
 @app.route('/plugins/<plugin_id>')
 def plugins(plugin_id=None):
-    action = request.args.get('action')
     gerrit_version, error = get_version()
+    action = request.args.get('action')
     gerrit_plugins, plugin = None, None
-    username = session.get('username')
-    password = session.get('password')
+    plugin_name, source_type, value = None, None, None
     connection = client.connect(GERRIT_URL,
-                                username=username,
-                                password=password)
+                                username=session.get('username'),
+                                password=session.get('password'))
     plugin_client = client.get_client('plugin', connection=connection)
     plugin_actions = {'enable': plugin_client.enable,
                       'disable': plugin_client.disable,
                       'reload': plugin_client.reload}
+    if request.method == 'POST':
+        filename = request.files['file']
+        url_path = request.form['plugin_url']
+        if bool(url_path) == bool(filename):
+            error = "Either URL or path to JAR-plugin file must be specified."
+        else:
+            if filename:
+                if filename.filename[-3:].lower() != 'jar':
+                    error = "Plugin file must of JAR type."
+                else:
+                    source_type, value = 'file', filename.stream.read()
+                    plugin_name = filename.filename
+            if url_path:
+                    source_type, value = 'url', url_path
+                    plugin_name = url_path.split("/")[-1]
     try:
         gerrit_plugins = plugin_client.get_all(detailed=True)
         if plugin_id:
@@ -99,11 +113,14 @@ def plugins(plugin_id=None):
             if action:
                 plugin_actions[action](plugin_id)
                 return redirect(url_for('plugins', plugin_id=plugin_id))
+        if plugin_name:
+            response = plugin_client.install(plugin_name, source_type, value)
+            return redirect('plugins/{0}'.format(response['id']))
     except (requests.ConnectionError, client_error.HTTPError) as error:
         app.logger.error(error)
     return render_template('plugin.html',
                            error=error,
-                           username=username,
+                           username=session.get('username'),
                            gerrit_url=GERRIT_URL,
                            gerrit_version=gerrit_version,
                            entry_category='plugins',

@@ -27,13 +27,24 @@
       {% endfor %}
       {% if entry_item['disabled'] %}
         <li><a href="{{ url_for('plugins', plugin_id=entry_item_name, action='enable') }}" class="button">Enable</a></li>
-          {% else %}
+      {% else %}
         <li>
           <a href="{{ url_for('plugins', plugin_id=entry_item_name, action='disable') }}" class="button">Disable</a>
           <a href="{{ url_for('plugins', plugin_id=entry_item_name, action='reload') }}" class="button">Reload</a>
         </li>
       {% endif %}
-
     </ul>
+  {% else %}
+    <form enctype="multipart/form-data" action="" method="post" style="display: inline-block">
+      <ul class="entries">
+        <li class="tbl_header">Install New Plugin</li>
+        <li class="hints">Specify <strong>either</strong> URL <strong>or</strong> local file path to JAR-plugin file</li>
+        <li>URL: <input type="text" name="plugin_url" size="50" value="{{ request.form.plugin_url }}" title="URL to jar file"></li>
+        <li>
+          File: <input type="file" name="file">
+        </li>
+        <li><div class="button"><input type="submit" value="Install"></div></li>
+      </ul>
+    </form>
   {% endif %}
 {% endblock %}
