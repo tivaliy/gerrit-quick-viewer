@@ -5,7 +5,9 @@
   <p class="note">
     <strong>Note:</strong> Specify your <i>username</i> and <i>password</i> from Gerrit user account (Settings &#8594; HTTP password).
   </p>
-  {% if error %}<div class="error"><strong>Error:</strong> {{ error }}</div>{% endif %}
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+    <p class="{{ category }}"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
+  {% endfor %}
   <form action="" method="post" class="form-style">
     <h2>Gerrit HTTP authentication credentials</h2>
     <dl>

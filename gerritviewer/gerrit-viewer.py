@@ -16,7 +16,7 @@
 import requests
 
 from flask import Flask, flash, render_template, request, redirect, session, \
-     url_for
+     url_for, Markup
 from gerritclient import client
 from gerritclient import error as client_error
 
@@ -32,9 +32,8 @@ app.config.update(dict(
 
 @app.errorhandler(404)
 def page_not_found(e):
-    gerrit_version, error = get_version()
+    gerrit_version = get_version()
     return render_template('404.html',
-                           error=e or error,
                            gerrit_url=GERRIT_URL,
                            gerrit_version=gerrit_version), 404
 
@@ -42,9 +41,8 @@ def page_not_found(e):
 @app.route('/')
 def index():
     username = session.get('username')
-    gerrit_version, error = get_version()
+    gerrit_version = get_version()
     return render_template('index.html',
-                           error=error,
                            username=username,
                            gerrit_url=GERRIT_URL,
                            gerrit_version=gerrit_version)
@@ -52,20 +50,20 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    gerrit_version, error = get_version()
+    gerrit_version = get_version()
     if request.method == 'POST':
         if not request.form['username']:
-            error = 'Invalid Username'
+            flash('Invalid Username', category='error')
         elif not request.form['password']:
-            error = 'Password field cannot be empty'
+            flash('Password field cannot be empty', category='error')
         else:
             session['logged_in'] = True
             session['username'] = request.form['username']
             session['password'] = request.form['password']
-            flash('You were logged in')
+            flash(Markup("You were logged in as <strong>'{0}'</strong> "
+                         "user").format(session['username']), category='note')
             return redirect(url_for('index'))
     return render_template('login.html',
-                           error=error,
                            gerrit_url=GERRIT_URL,
                            gerrit_version=gerrit_version)
 
@@ -73,14 +71,14 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    flash('You were logged out')
+    flash('You were logged out', category='note')
     return redirect(url_for('index'))
 
 
 @app.route('/plugins', methods=['GET', 'POST'])
 @app.route('/plugins/<plugin_id>')
 def plugins(plugin_id=None):
-    gerrit_version, error = get_version()
+    gerrit_version = get_version()
     action = request.args.get('action')
     gerrit_plugins, plugin = None, None
     plugin_name, source_type, value = None, None, None
@@ -95,11 +93,12 @@ def plugins(plugin_id=None):
         filename = request.files['file']
         url_path = request.form['plugin_url']
         if bool(url_path) == bool(filename):
-            error = "Either URL or path to JAR-plugin file must be specified."
+            flash('Either URL or path to JAR-plugin file must be specified.',
+                  category='error')
         else:
             if filename:
                 if filename.filename[-3:].lower() != 'jar':
-                    error = "Plugin file must of JAR type."
+                    flash('Plugin file must of JAR type.', category='error')
                 else:
                     source_type, value = 'file', filename.stream.read()
                     plugin_name = filename.filename
@@ -119,7 +118,6 @@ def plugins(plugin_id=None):
     except (requests.ConnectionError, client_error.HTTPError) as error:
         app.logger.error(error)
     return render_template('plugin.html',
-                           error=error,
                            username=session.get('username'),
                            gerrit_url=GERRIT_URL,
                            gerrit_version=gerrit_version,
@@ -130,13 +128,14 @@ def plugins(plugin_id=None):
 
 
 def get_version():
+    version = None
     try:
         version = client.get_client(
             'config', connection=client.connect(GERRIT_URL)).get_version()
-        return version, None
     except requests.ConnectionError as e:
-        app.logger.error(e)
-    return None, e
+        app.logger.error(e.message)
+        flash(e, category='error')
+    return version
 
 
 if __name__ == '__main__':

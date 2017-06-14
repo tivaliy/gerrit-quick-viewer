@@ -9,7 +9,9 @@
     <strong>Note:</strong> Ability to perform <i>View</i>, <i>Modify</i>, <i>Delete</i> or <i>Create</i> actions depends on
     <strong> '{% if session.logged_in %}{{ username }}{% else %} anonymous{% endif %}' </strong> access rights.
   </p>
-  {% if error %}<p class="error"><strong>Error:</strong> {{ error }}</p>{% endif %}
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+    <p class="{{ category }}"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
+  {% endfor %}
   {% if entries %}
     <div class="content">{% block entries %}{% endblock %}</div>
   {% endif %}
