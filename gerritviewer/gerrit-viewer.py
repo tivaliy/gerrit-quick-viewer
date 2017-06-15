@@ -98,7 +98,7 @@ def plugins(plugin_id=None):
         else:
             if filename:
                 if filename.filename[-3:].lower() != 'jar':
-                    flash('Plugin file must of JAR type.', category='error')
+                    flash('Plugin file must be of JAR type.', category='error')
                 else:
                     source_type, value = 'file', filename.stream.read()
                     plugin_name = filename.filename
@@ -111,12 +111,20 @@ def plugins(plugin_id=None):
             plugin = plugin_client.get_by_id(plugin_id)
             if action:
                 plugin_actions[action](plugin_id)
+                action = ('{}d'.format(action)
+                          if action[-1] == 'e' else '{}ed'.format(action))
+                msg = "Plugin '{0}' was successfully {1}.".format(plugin_id,
+                                                                  action)
+                flash(msg, category='note')
                 return redirect(url_for('plugins', plugin_id=plugin_id))
         if plugin_name:
             response = plugin_client.install(plugin_name, source_type, value)
+            flash("Start installing '{0}' plugin.".format(response['id']),
+                  category='note')
             return redirect('plugins/{0}'.format(response['id']))
     except (requests.ConnectionError, client_error.HTTPError) as error:
         app.logger.error(error)
+        flash(error, category='error')
     return render_template('plugin.html',
                            username=session.get('username'),
                            gerrit_url=GERRIT_URL,
