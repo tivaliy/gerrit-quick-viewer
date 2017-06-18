@@ -32,25 +32,22 @@ app.config.update(dict(
 
 @app.errorhandler(404)
 def page_not_found(e):
-    gerrit_version = get_version()
     return render_template('404.html',
                            gerrit_url=GERRIT_URL,
-                           gerrit_version=gerrit_version), 404
+                           gerrit_version=get_version()), 404
 
 
 @app.route('/')
 def index():
     username = session.get('username')
-    gerrit_version = get_version()
     return render_template('index.html',
                            username=username,
                            gerrit_url=GERRIT_URL,
-                           gerrit_version=gerrit_version)
+                           gerrit_version=get_version())
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    gerrit_version = get_version()
     if request.method == 'POST':
         if not request.form['username']:
             flash('Invalid Username', category='error')
@@ -65,7 +62,7 @@ def login():
             return redirect(url_for('index'))
     return render_template('login.html',
                            gerrit_url=GERRIT_URL,
-                           gerrit_version=gerrit_version)
+                           gerrit_version=get_version())
 
 
 @app.route('/logout')
@@ -78,7 +75,6 @@ def logout():
 @app.route('/plugins', methods=['GET', 'POST'])
 @app.route('/plugins/<plugin_id>')
 def plugins(plugin_id=None):
-    gerrit_version = get_version()
     action = request.args.get('action')
     gerrit_plugins, plugin = None, None
     plugin_name, source_type, value = None, None, None
@@ -128,7 +124,7 @@ def plugins(plugin_id=None):
     return render_template('plugin.html',
                            username=session.get('username'),
                            gerrit_url=GERRIT_URL,
-                           gerrit_version=gerrit_version,
+                           gerrit_version=get_version(),
                            entry_category='plugins',
                            entries=gerrit_plugins,
                            entry_item=plugin,
