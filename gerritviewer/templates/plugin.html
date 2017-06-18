@@ -8,9 +8,7 @@
       {% else %}
         <li>
       {% endif %}
-    <a href="{{ url_for('plugins', plugin_id=plugin_name) }}">
-      {{ plugin_name }} (<em>{{ plugin_details['version'] }}</em>)
-    </a>
+      <a href="{{ url_for('plugins', plugin_id=plugin_name) }}">{{ plugin_name }} (<em>{{ plugin_details['version'] }}</em>)</a>
     </li>
     {% else %}
       <li><em>No entries here so far</em></li>

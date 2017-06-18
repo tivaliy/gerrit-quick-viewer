@@ -72,6 +72,34 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/groups')
+@app.route('/groups/<group_id>')
+def groups(group_id=None):
+    gerrit_groups, group = None, {}
+    connection = client.connect(GERRIT_URL,
+                                username=session.get('username'),
+                                password=session.get('password'))
+    group_client = client.get_client('group', connection=connection)
+    try:
+        gerrit_groups = group_client.get_all()
+        if group_id:
+            group = group_client.get_by_id(
+                group_id,
+                detailed=request.args.get('details')
+            )
+    except (requests.ConnectionError, client_error.HTTPError) as error:
+        app.logger.error(error)
+        flash(error, category='error')
+    return render_template('group.html',
+                           username=session.get('username'),
+                           gerrit_url=GERRIT_URL,
+                           gerrit_version=get_version(),
+                           entry_category='groups',
+                           entries=gerrit_groups,
+                           entry_item=group,
+                           entry_item_name=group.get('name'))
+
+
 @app.route('/plugins', methods=['GET', 'POST'])
 @app.route('/plugins/<plugin_id>')
 def plugins(plugin_id=None):
