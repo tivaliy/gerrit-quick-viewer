@@ -90,7 +90,7 @@ def groups(group_id=None):
     except (requests.ConnectionError, client_error.HTTPError) as error:
         app.logger.error(error)
         flash(error, category='error')
-    return render_template('group.html',
+    return render_template('groups.html',
                            username=session.get('username'),
                            gerrit_url=GERRIT_URL,
                            gerrit_version=get_version(),
@@ -149,7 +149,7 @@ def plugins(plugin_id=None):
     except (requests.ConnectionError, client_error.HTTPError) as error:
         app.logger.error(error)
         flash(error, category='error')
-    return render_template('plugin.html',
+    return render_template('plugins.html',
                            username=session.get('username'),
                            gerrit_url=GERRIT_URL,
                            gerrit_version=get_version(),
