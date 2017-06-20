@@ -62,9 +62,10 @@ div.wrapper {
     padding: 10px;
 }
 
-/* --------------------- Form Style ------------------------ */
+/* --------------------- Sign In Form Style ------------------------ */
 
 .form-style {
+    display: block;
     max-width: 420px;
     margin: 10px auto;
     padding: 16px;
@@ -130,6 +131,10 @@ dd {
     padding: 0;
 }
 
+form {
+    display: inline-block
+}
+
 /*--------------------- Entries Style ---------------- */
 
 .entries {
@@ -189,7 +194,8 @@ dd {
     font-weight: 700;
 }
 
-.entries a.button {
+.entries a.button,
+.button input[type="submit"] {
     display: inline-block;
     background: #377BA8;
     color: #EEEEEE;
@@ -197,8 +203,10 @@ dd {
     padding: 5px 15px;
     text-decoration: none;
     font-size: 0.9em;
+    border-style: none;
 }
 
-.entries a.button:hover {
+.entries a.button:hover,
+.button input[type="submit"]:hover {
     background: #3D228E;
 }

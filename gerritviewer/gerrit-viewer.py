@@ -72,14 +72,18 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/groups')
+@app.route('/groups', methods=['GET', 'POST'])
 @app.route('/groups/<group_id>')
 def groups(group_id=None):
-    gerrit_groups, group = None, {}
+    gerrit_groups, group, group_name = None, {}, None
     connection = client.connect(GERRIT_URL,
                                 username=session.get('username'),
                                 password=session.get('password'))
     group_client = client.get_client('group', connection=connection)
+    if request.method == 'POST':
+        group_name = request.form['group_name']
+        if not group_name:
+            flash('Name of group must be specified.', category='error')
     try:
         gerrit_groups = group_client.get_all()
         if group_id:
@@ -87,6 +91,11 @@ def groups(group_id=None):
                 group_id,
                 detailed=request.args.get('details')
             )
+        if group_name:
+            response = group_client.create(group_name)
+            flash("Group '{0}' was successfully "
+                  "created.".format(response['name']), category='note')
+            return redirect('groups/{0}'.format(response['group_id']))
     except (requests.ConnectionError, client_error.HTTPError) as error:
         app.logger.error(error)
         flash(error, category='error')

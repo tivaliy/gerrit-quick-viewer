@@ -41,5 +41,14 @@
         <li><a href="{{ url_for('groups', group_id=entry_item['group_id'], details='1') }}" class="button">Show Details</a></li>
       {% endif %}
     </ul>
+  {% else %}
+    <form action="" method="post">
+      <ul class="entries">
+        <li class="tbl_header">Create New Group</li>
+        <li class="hints">Create group with <strong>default</strong> parameters</li>
+        <li>Group name: <input type="text" name="group_name" size="30" value="{{ request.form.group_name }}" title="Name of group to be created"></li>
+        <li><div class="button"><input type="submit" value="Create"></div></li>
+      </ul>
+    </form>
   {% endif %}
 {% endblock %}
