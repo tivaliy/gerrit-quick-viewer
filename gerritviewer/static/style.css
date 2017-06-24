@@ -210,3 +210,43 @@ form {
 .button input[type="submit"]:hover {
     background: #3D228E;
 }
+
+/*--------------------- Delete Item Style ---------------- */
+
+/* Close Button */
+
+.close-icon {
+    font: 14px/100% arial, sans-serif;
+    position: absolute;
+    text-shadow: 0 1px 0 #fff;
+    top: -5px;
+    clear: both;
+}
+
+.close-icon:after {
+    content: '✖'; /* UTF-8 symbol */
+}
+
+.dialog a {
+    text-decoration: none;
+}
+
+.dialog {
+    background: #dddeee;
+    border: 1px solid #cccaaa;
+    border-radius: 5px;
+    float: left;
+    margin-top: 4px;
+    margin-right: 20px;
+    position: relative;
+}
+
+.user-container {
+    margin: 0 auto;
+}
+
+.user-container:after {
+    content: '';
+    display: block;
+    clear: both;
+}

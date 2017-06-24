@@ -75,6 +75,7 @@ def logout():
 @app.route('/groups', methods=['GET', 'POST'])
 @app.route('/groups/<group_id>')
 def groups(group_id=None):
+    action = request.args.get('action')
     gerrit_groups, group, group_name = None, {}, None
     connection = client.connect(GERRIT_URL,
                                 username=session.get('username'),
@@ -91,6 +92,14 @@ def groups(group_id=None):
                 group_id,
                 detailed=request.args.get('details')
             )
+            if action:
+                group_client.delete_members(group_id,
+                                            [request.args.get('member')])
+                flash(Markup("User <strong>'{}'</strong> was successfully "
+                             "removed from <strong>'{}'</strong> group"
+                             "".format(request.args.get('member'),
+                                       group['name'])), category='note')
+                return redirect('groups/{0}?details=1'.format(group_id))
         if group_name:
             response = group_client.create(group_name)
             flash("Group '{0}' was successfully "

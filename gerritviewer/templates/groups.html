@@ -23,11 +23,16 @@
               --
             {% endfor %}
           {% elif k == "members" %}
+            <div class="user-container">
             {% for i in v %}
-              <img src="{{ url_for('static', filename='img/user_icon.png') }}" alt="Gerrit User"> {{ i['username'] }}
+              <div class="dialog">
+                <img src="{{ url_for('static', filename='img/user_icon.png') }}" alt="Gerrit User">
+                {{ i['username'] }}<a href="{{ url_for('groups', group_id=entry_item['group_id'], member=i['username'], action='delete') }}" class="close-icon"></a>
+              </div>
             {%  else %}
               --
             {% endfor %}
+            </div>
           {% elif k == "owner" %}
             <img src="{{ url_for('static', filename='img/group_icon.png') }}" alt="Gerrit Group"> <a href="{{ url_for('groups', group_id=v)|urlencode }}">{{ v }}</a>
           {% else %}
