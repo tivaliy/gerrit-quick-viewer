@@ -72,6 +72,28 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/accounts', methods=['GET', 'POST'])
+def accounts():
+    gerrit_accounts = None
+    connection = client.connect(GERRIT_URL,
+                                username=session.get('username'),
+                                password=session.get('password'))
+    account_client = client.get_client('account', connection=connection)
+    try:
+        if request.method == 'POST':
+            gerrit_accounts = account_client.get_all(
+                request.form['query_string'], detailed=True)
+    except (requests.ConnectionError, client_error.HTTPError) as error:
+        app.logger.error(error)
+        flash(error, category='error')
+    return render_template('accounts.html',
+                           username=session.get('username'),
+                           gerrit_url=GERRIT_URL,
+                           gerrit_version=get_version(),
+                           entry_category='accounts',
+                           entries=gerrit_accounts)
+
+
 @app.route('/groups', methods=['GET', 'POST'])
 @app.route('/groups/<group_id>')
 def groups(group_id=None):
@@ -145,8 +167,8 @@ def plugins(plugin_id=None):
                     source_type, value = 'file', filename.stream.read()
                     plugin_name = filename.filename
             if url_path:
-                    source_type, value = 'url', url_path
-                    plugin_name = url_path.split("/")[-1]
+                source_type, value = 'url', url_path
+                plugin_name = url_path.split("/")[-1]
     try:
         gerrit_plugins = plugin_client.get_all(detailed=True)
         if plugin_id:

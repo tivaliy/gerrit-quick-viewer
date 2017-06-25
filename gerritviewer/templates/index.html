@@ -12,7 +12,5 @@
   {% for category, message in get_flashed_messages(with_categories=true) %}
     <p class="{{ category }}"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
   {% endfor %}
-  {% if entries %}
-    <div class="content">{% block entries %}{% endblock %}</div>
-  {% endif %}
+  <div class="content">{% block entries %}{% endblock %}</div>
 {% endblock %}

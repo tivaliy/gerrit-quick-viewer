@@ -1,15 +1,17 @@
 {% extends "index.html" %}
 {% block entries %}
-  <ul class="entries">
-    <li class="tbl_header">Groups</li>
-    {% for group_name, group_details in entries.items()|sort %}
+  {% if entries %}
+    <ul class="entries">
+      <li class="tbl_header">Groups</li>
+      {% for group_name, group_details in entries.items()|sort %}
         <li>
           <a href="{{ url_for('groups', group_id=group_details['group_id']) }}">{{ group_name }} ({{ group_details['group_id'] }})</a>
         </li>
-    {% else %}
-      <li><em>No entries here so far</em></li>
-    {% endfor %}
-  </ul>
+      {% else %}
+        <li><em>No entries here so far</em></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
   {% if entry_item %}
     <ul class="entries">
       <li class="tbl_header">{{ entry_item_name }}</li>

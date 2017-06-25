@@ -12,7 +12,7 @@
   <a href="{{ url_for('index') }}"><h1>Gerrit QuickViewer - {% block url %}{{ gerrit_url }} [{{ gerrit_version }}]{% endblock %}</h1></a>
   <div class="navbar">
     <div class="menu">
-      <a href="#">Accounts</a> |
+      <a href="{{ url_for('accounts') }}">Accounts</a> |
       <a href="#">Projects</a> |
       <a href="{{ url_for('groups') }}">Groups</a> |
       <a href="{{ url_for('plugins') }}">Plugins</a>

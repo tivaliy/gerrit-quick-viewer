@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+{% block entries %}
+  <form action="" method="post">
+    <ul class="entries">
+      <li class="tbl_header">Search User Account</li>
+      <li>Query string:
+        <input type="text" name="query_string" size="30" value="{{ request.form.query_string }}" title="Query string request">
+      </li>
+      <li>
+        <div class="button"><input type="submit" value="Search"></div>
+      </li>
+    </ul>
+  </form>
+  {% if entries %}
+    <ul class="entries">
+      <li class="tbl_header">Accounts</li>
+      {% for account in entries %}
+        <li>
+          <div class="item">{{ account['username'] }}</div>
+          {{ account['name'] }} (<i>{{ account['email'] or '--' }}</i>)
+        </li>
+      {% else %}
+        <li><em>No entries here so far</em></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}
