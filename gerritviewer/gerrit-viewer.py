@@ -73,8 +73,9 @@ def logout():
 
 
 @app.route('/accounts', methods=['GET', 'POST'])
-def accounts():
-    gerrit_accounts = None
+@app.route('/accounts/<account_id>', methods=['GET', 'POST'])
+def accounts(account_id=None):
+    gerrit_accounts, account = None, {}
     connection = client.connect(GERRIT_URL,
                                 username=session.get('username'),
                                 password=session.get('password'))
@@ -83,6 +84,13 @@ def accounts():
         if request.method == 'POST':
             gerrit_accounts = account_client.get_all(
                 request.form['query_string'], detailed=True)
+            flash(Markup(
+                "Search results for <strong>'{}'</strong>: {}".format(
+                    request.form['query_string'],
+                    "Nothing Found" if not gerrit_accounts else '')),
+                  category='note')
+        if account_id:
+            account = account_client.get_by_id(account_id, detailed=True)
     except (requests.ConnectionError, client_error.HTTPError) as error:
         app.logger.error(error)
         flash(error, category='error')
@@ -91,7 +99,9 @@ def accounts():
                            gerrit_url=GERRIT_URL,
                            gerrit_version=get_version(),
                            entry_category='accounts',
-                           entries=gerrit_accounts)
+                           entries=gerrit_accounts,
+                           entry_item=account,
+                           entry_item_name=account.get('name'))
 
 
 @app.route('/groups', methods=['GET', 'POST'])

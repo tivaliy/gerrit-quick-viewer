@@ -1,5 +1,6 @@
 {% extends "index.html" %}
 {% block entries %}
+  {% if not entry_item %}
   <form action="" method="post">
     <ul class="entries">
       <li class="tbl_header">Search User Account</li>
@@ -11,13 +12,24 @@
       </li>
     </ul>
   </form>
+  {% else %}
+    <ul class="entries">
+      <li class="tbl_header">{{ entry_item_name }}</li>
+      {% for k, v in entry_item.items()|sort %}
+        <li><div class="item">{{ k }}</div>{{ v }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
   {% if entries %}
     <ul class="entries">
       <li class="tbl_header">Accounts</li>
-      {% for account in entries %}
+      {% for account in entries|sort %}
         <li>
-          <div class="item">{{ account['username'] }}</div>
-          {{ account['name'] }} (<i>{{ account['email'] or '--' }}</i>)
+          [{{ account['_account_id'] }}]
+          <a href="{{ url_for('accounts', account_id=account['_account_id']) }}">
+            <strong>{{ account['username'] }}</strong> / {{ account['name'] }}
+          </a>
+          (<i>{{ account['email'] or '--' }}</i>)
         </li>
       {% else %}
         <li><em>No entries here so far</em></li>
