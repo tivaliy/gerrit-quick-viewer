@@ -29,7 +29,7 @@
         <li><a href="{{ url_for('plugins', plugin_id=entry_item_name, action='enable') }}" class="button">Enable</a></li>
       {% else %}
         <li>
-          <a href="{{ url_for('plugins', plugin_id=entry_item_name, action='disable') }}" class="button">Disable</a>
+          <a href="{{ url_for('plugins', plugin_id=entry_item_name, action='disable') }}" class="button"><span class="marked">Disable</span></a>
           <a href="{{ url_for('plugins', plugin_id=entry_item_name, action='reload') }}" class="button">Reload</a>
         </li>
       {% endif %}

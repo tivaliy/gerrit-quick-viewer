@@ -75,11 +75,14 @@ def logout():
 @app.route('/accounts', methods=['GET', 'POST'])
 @app.route('/accounts/<account_id>', methods=['GET', 'POST'])
 def accounts(account_id=None):
+    action = request.args.get('action')
     gerrit_accounts, account = None, {}
     connection = client.connect(GERRIT_URL,
                                 username=session.get('username'),
                                 password=session.get('password'))
     account_client = client.get_client('account', connection=connection)
+    account_actions = {'enable': account_client.enable,
+                       'disable': account_client.disable}
     try:
         if request.method == 'POST':
             gerrit_accounts = account_client.get_all(
@@ -91,6 +94,13 @@ def accounts(account_id=None):
                   category='note')
         if account_id:
             account = account_client.get_by_id(account_id, detailed=True)
+            account['is_active'] = account_client.is_active(account_id)
+            if action:
+                account_actions[action](account_id)
+                flash(Markup("Account with <strong>ID={}</strong> was "
+                             "successfully <strong>{}d</strong>".format(
+                              account_id, action)), category='note')
+                return redirect('accounts/{0}'.format(account_id))
     except (requests.ConnectionError, client_error.HTTPError) as error:
         app.logger.error(error)
         flash(error, category='error')

@@ -4,8 +4,9 @@
   <form action="" method="post">
     <ul class="entries">
       <li class="tbl_header">Search User Account</li>
+      <li class="hints">Fetch all users (active and inactive) whose name starts from 'John' &#8594; <strong>name:john+(is:inactive OR is:active)</strong></li>
       <li>Query string:
-        <input type="text" name="query_string" size="30" value="{{ request.form.query_string }}" title="Query string request">
+        <input type="text" name="query_string" size=80" value="{{ request.form.query_string }}" title="Query string request">
       </li>
       <li>
         <div class="button"><input type="submit" value="Search"></div>
@@ -18,8 +19,14 @@
       {% for k, v in entry_item.items()|sort %}
         <li><div class="item">{{ k }}</div>{{ v }}</li>
       {% endfor %}
+      {% if entry_item['is_active'] %}
+        <li><a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='disable') }}" class="button"><span class="marked">Disable</span></a></li>
+      {% else %}
+        <li><a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='enable') }}" class="button">Enable</a></li>
+      {% endif %}
     </ul>
   {% endif %}
+  <br/>
   {% if entries %}
     <ul class="entries">
       <li class="tbl_header">Accounts</li>

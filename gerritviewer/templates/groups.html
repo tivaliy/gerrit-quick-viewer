@@ -5,7 +5,7 @@
       <li class="tbl_header">Groups</li>
       {% for group_name, group_details in entries.items()|sort %}
         <li>
-          <a href="{{ url_for('groups', group_id=group_details['group_id']) }}">{{ group_name }} ({{ group_details['group_id'] }})</a>
+          [{{ group_details['group_id'] }}] <a href="{{ url_for('groups', group_id=group_details['group_id']) }}">{{ group_name }}</a>
         </li>
       {% else %}
         <li><em>No entries here so far</em></li>

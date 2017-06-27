@@ -211,6 +211,10 @@ form {
     background: #3D228E;
 }
 
+.entries a.button:hover .marked {
+    color: #FF0000;
+}
+
 /*--------------------- Delete Item Style ---------------- */
 
 /* Close Button */
