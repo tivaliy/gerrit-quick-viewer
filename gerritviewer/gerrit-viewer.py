@@ -135,12 +135,15 @@ def groups(group_id=None):
                 detailed=request.args.get('details')
             )
             if action:
-                group_client.delete_members(group_id,
-                                            [request.args.get('member')])
-                flash(Markup("User <strong>'{}'</strong> was successfully "
-                             "removed from <strong>'{}'</strong> group"
-                             "".format(request.args.get('member'),
-                                       group['name'])), category='note')
+                actions = {'delete': group_client.delete_members,
+                           'exclude': group_client.exclude}
+                attribute = [request.args.get('member') or
+                             request.args.get('group')]
+                actions[action](group_id, attribute)
+                flash(Markup("<strong>'{}'</strong> was successfully "
+                             "{}d from <strong>'{}'</strong> group"
+                             "".format(attribute[0], action, group['name'])),
+                      category='note')
                 return redirect('groups/{0}?details=1'.format(group_id))
         if group_name:
             response = group_client.create(group_name)

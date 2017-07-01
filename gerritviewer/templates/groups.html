@@ -6,6 +6,7 @@
       {% for group_name, group_details in entries.items()|sort %}
         <li>
           [{{ group_details['group_id'] }}] <a href="{{ url_for('groups', group_id=group_details['group_id']) }}">{{ group_name }}</a>
+          <em>({{ group_details['description'] or '--' }})</em>
         </li>
       {% else %}
         <li><em>No entries here so far</em></li>
@@ -19,11 +20,17 @@
         <li>
           <div class="item">{{ k }}</div>
           {% if k == "includes"  %}
+            <div class="user-container">
             {% for i in v %}
-              <a href="{{ url_for('groups', group_id=i['group_id']) }}" >{{ i['name'] }}</a>
+              <div class="dialog">
+                <img src="{{ url_for('static', filename='img/group_icon.png') }}" alt="Gerrit Group">
+                <a href="{{ url_for('groups', group_id=i['group_id']) }}">{{ i['name'] }}</a>
+                &nbsp;<a href="{{ url_for('groups', group_id=entry_item['group_id'], group=i['name'], action='exclude') }}" class="close-icon"></a>
+              </div>
             {%  else %}
               --
             {% endfor %}
+            </div>
           {% elif k == "members" %}
             <div class="user-container">
             {% for i in v %}
