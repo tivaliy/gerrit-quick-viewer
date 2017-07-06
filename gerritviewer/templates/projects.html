@@ -1,0 +1,42 @@
+{% extends "index.html" %}
+{% block entries %}
+  {% set skip_next = request.args.get('skip')|int + 25 %}
+  {% set skip_prev = request.args.get('skip')|int - 25 %}
+  <ul class="entries">
+    <li class="tbl_header">Projects</li>
+    <li class="pagination">
+      {% if request.args.get('skip')|int - 25 >= 0 %}
+        <a href="{{ url_for('projects', skip=skip_prev) }}">&#8672; Previous</a>
+      {% endif %}
+      {% if entries|length == 25 %}
+        <a href="{{ url_for('projects', skip=skip_next) }}">Next &#8674;</a>
+      {% endif %}
+    </li>
+    {% for project_name, project_details in entries.items()|sort %}
+      <li>
+        {% if project_details['state'] == 'READ_ONLY' %}
+          <img src="{{ url_for('static', filename='img/read_only.png') }}" alt="READ_ONLY project" title="READ_ONLY project">
+        {% elif project_details['state'] == 'HIDDEN' %}
+          <img src="{{ url_for('static', filename='img/hidden.png') }}" alt="HIDDEN project" title="HIDDEN project">
+        {% else %}
+          <img src="{{ url_for('static', filename='img/visible.png') }}" alt="ACTIVE project" title="ACTIVE project">
+        {% endif %}
+        <a href="{{ url_for('projects', project_id=project_details['id']) }}">{{ project_name }}</a>
+        <em>{{ project_details['description'] }}</em>
+        {% if project_details['web_links'] %}
+          <em>(<a href="{{ gerrit_url }}/{{ project_details['web_links'][0]['url'] }}">{{ project_details['web_links'][0]['name'] }}</a>)</em>
+        {% endif %}
+      </li>
+    {% else %}
+      <li><em>No entries here so far</em></li>
+    {% endfor %}
+    <li class="pagination">
+      {% if request.args.get('skip')|int - 25 >= 0 %}
+        <a href="{{ url_for('projects', skip=skip_prev) }}">&#8672; Previous</a>
+      {% endif %}
+      {% if entries|length == 25 %}
+        <a href="{{ url_for('projects', skip=skip_next) }}">Next &#8674;</a>
+      {% endif %}
+    </li>
+  </ul>
+{% endblock %}

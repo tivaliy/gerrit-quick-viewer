@@ -13,7 +13,7 @@
   <div class="navbar">
     <div class="menu">
       <a href="{{ url_for('accounts') }}">Accounts</a> |
-      <a href="#">Projects</a> |
+      <a href="{{ url_for('projects') }}">Projects</a> |
       <a href="{{ url_for('groups') }}">Groups</a> |
       <a href="{{ url_for('plugins') }}">Plugins</a>
     </div>
@@ -28,5 +28,7 @@
   </div>
   {% block body %}{% endblock %}
 </div>
+<div class="footer">Powered by <a href="https://github.com/tivaliy/gerrit-quick-viewer">Gerrit QuickViewer</a>,
+  based on <a href="https://github.com/tivaliy/python-gerritclient">python-gerritclient</a>  | Copyright &copy; 2017. &nbsp;</div>
 </body>
 </html>

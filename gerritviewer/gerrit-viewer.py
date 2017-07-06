@@ -114,6 +114,28 @@ def accounts(account_id=None):
                            entry_item_name=account.get('name'))
 
 
+@app.route('/projects')
+def projects():
+    skip = request.args.get('skip')
+    gerrit_projects = None
+    connection = client.connect(GERRIT_URL,
+                                username=session.get('username'),
+                                password=session.get('password'))
+    project_client = client.get_client('project', connection=connection)
+    try:
+        gerrit_projects = project_client.get_all(is_all=True, limit=25,
+                                                 description=True, skip=skip)
+    except (requests.ConnectionError, client_error.HTTPError) as error:
+        app.logger.error(error)
+        flash(error, category='error')
+    return render_template('projects.html',
+                           username=session.get('username'),
+                           gerrit_url=GERRIT_URL,
+                           gerrit_version=get_version(),
+                           entry_category='projects',
+                           entries=gerrit_projects)
+
+
 @app.route('/groups', methods=['GET', 'POST'])
 @app.route('/groups/<group_id>')
 def groups(group_id=None):
