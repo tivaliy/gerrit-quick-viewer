@@ -86,14 +86,16 @@ def accounts(account_id=None):
     try:
         if request.method == 'POST':
             gerrit_accounts = account_client.get_all(
-                request.form['query_string'], detailed=True)
+                request.form['query_string'],
+                detailed=True if request.form.getlist('details') else False)
             flash(Markup(
                 "Search results for <strong>'{}'</strong>: {}".format(
                     request.form['query_string'],
                     "Nothing Found" if not gerrit_accounts else '')),
                   category='note')
         if account_id:
-            account = account_client.get_by_id(account_id, detailed=True)
+            account = account_client.get_by_id(
+                account_id, detailed=request.args.get('details', False))
             account['is_active'] = account_client.is_active(account_id)
             if action:
                 account_actions[action](account_id)

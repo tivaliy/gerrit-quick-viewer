@@ -9,6 +9,9 @@
         <input type="text" name="query_string" size=80" value="{{ request.form.query_string }}" title="Query string request">
       </li>
       <li>
+        <input type="checkbox" name="details" value="enable" title="Fetch detailed accounts info"> Show details
+      </li>
+      <li>
         <div class="button"><input type="submit" value="Search"></div>
       </li>
     </ul>
@@ -19,11 +22,18 @@
       {% for k, v in entry_item.items()|sort %}
         <li><div class="item">{{ k }}</div>{{ v }}</li>
       {% endfor %}
-      {% if entry_item['is_active'] %}
-        <li><a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='disable') }}" class="button"><span class="marked">Disable</span></a></li>
-      {% else %}
-        <li><a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='enable') }}" class="button">Enable</a></li>
-      {% endif %}
+      <li>
+        {% if request.args.get('details') %}
+          <a href="{{ url_for('accounts', account_id=entry_item['_account_id']) }}" class="button">Hide Details</a>
+        {% else %}
+          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], details='1') }}" class="button">Show Details</a>
+        {% endif %}
+        {% if entry_item['is_active'] %}
+          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='disable') }}" class="button"><span class="marked">Disable</span></a>
+        {% else %}
+          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='enable') }}" class="button">Enable</a>
+        {% endif %}
+      </li>
     </ul>
   {% endif %}
   <br/>
@@ -32,8 +42,8 @@
       <li class="tbl_header">Accounts</li>
       {% for account in entries|sort %}
         <li>
-          [{{ account['_account_id'] }}]
           <a href="{{ url_for('accounts', account_id=account['_account_id']) }}">
+            [{{ account['_account_id'] }}]
             <strong>{{ account['username'] }}</strong> / {{ account['name'] }}
           </a>
           (<i>{{ account['email'] or '--' }}</i>)
