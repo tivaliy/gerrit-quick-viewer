@@ -57,6 +57,7 @@ def login():
             session['logged_in'] = True
             session['username'] = request.form['username']
             session['password'] = request.form['password']
+            session['auth_type'] = request.form['auth_type']
             flash(Markup("You were logged in as <strong>'{0}'</strong> "
                          "user").format(session['username']), category='note')
             return redirect(url_for('index'))
@@ -77,10 +78,7 @@ def logout():
 def accounts(account_id=None):
     action = request.args.get('action')
     gerrit_accounts, account = None, {}
-    connection = client.connect(GERRIT_URL,
-                                username=session.get('username'),
-                                password=session.get('password'))
-    account_client = client.get_client('account', connection=connection)
+    account_client = client.get_client('account', connection=get_connection())
     account_actions = {'enable': account_client.enable,
                        'disable': account_client.disable}
     try:
@@ -121,10 +119,7 @@ def accounts(account_id=None):
 def projects(project_name=None):
     skip = request.args.get('skip')
     gerrit_projects, project = None, {}
-    connection = client.connect(GERRIT_URL,
-                                username=session.get('username'),
-                                password=session.get('password'))
-    project_client = client.get_client('project', connection=connection)
+    project_client = client.get_client('project', connection=get_connection())
     try:
         gerrit_projects = project_client.get_all(is_all=True, limit=25,
                                                  description=True, skip=skip)
@@ -148,10 +143,7 @@ def projects(project_name=None):
 def groups(group_id=None):
     action = request.args.get('action')
     gerrit_groups, group, group_name = None, {}, None
-    connection = client.connect(GERRIT_URL,
-                                username=session.get('username'),
-                                password=session.get('password'))
-    group_client = client.get_client('group', connection=connection)
+    group_client = client.get_client('group', connection=get_connection())
     if request.method == 'POST':
         group_name = request.form['group_name']
         if not group_name:
@@ -198,10 +190,7 @@ def plugins(plugin_id=None):
     action = request.args.get('action')
     gerrit_plugins, plugin = None, None
     plugin_name, source_type, value = None, None, None
-    connection = client.connect(GERRIT_URL,
-                                username=session.get('username'),
-                                password=session.get('password'))
-    plugin_client = client.get_client('plugin', connection=connection)
+    plugin_client = client.get_client('plugin', connection=get_connection())
     plugin_actions = {'enable': plugin_client.enable,
                       'disable': plugin_client.disable,
                       'reload': plugin_client.reload}
@@ -249,6 +238,13 @@ def plugins(plugin_id=None):
                            entries=gerrit_plugins,
                            entry_item=plugin,
                            entry_item_name=plugin['id'] if plugin else None)
+
+
+def get_connection():
+    return client.connect(GERRIT_URL,
+                          auth_type=session.get('auth_type'),
+                          username=session.get('username'),
+                          password=session.get('password'))
 
 
 def get_version():

@@ -11,10 +11,13 @@
   <form action="" method="post" class="form-style">
     <h2>Gerrit HTTP authentication credentials</h2>
     <dl>
-      <dt>Username:
-      <dd><input type="text" name="username" size="30" value="{{ request.form.username }}">
-      <dt>Password:
-      <dd><input type="password" name="password" size="30">
+      <dt>Username:</dt>
+      <dd><input type="text" name="username" size="30" value="{{ request.form.username }}"></dd>
+      <dt>Password:</dt>
+      <dd><input type="password" name="password" size="30"></dd>
+      <dt>HTTP authentication methods:</dt>
+      <dd><input type="radio" name="auth_type" value="basic" title="HTTP Basic auth method" checked="checked"> HTTP Basic</dd>
+      <dd><input type="radio" name="auth_type" value="digest" title="HTTP Digest auth method"> HTTP Digest</dd>
     </dl>
     <div class="actions"><input type="submit" value="Sign In"></div>
   </form>
