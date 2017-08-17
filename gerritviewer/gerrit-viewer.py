@@ -21,19 +21,14 @@ from gerritclient import client
 from gerritclient import error as client_error
 
 
-GERRIT_URL = 'http://ci.infra.local/gerrit'
-
 app = Flask(__name__)
-app.config.update(dict(
-    DEBUG=True,
-    SECRET_KEY='development key'
-))
+app.config.from_object('config')
 
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html',
-                           gerrit_url=GERRIT_URL,
+                           gerrit_url=get_gerrit_url(),
                            gerrit_version=get_version()), 404
 
 
@@ -42,7 +37,7 @@ def index():
     username = session.get('username')
     return render_template('index.html',
                            username=username,
-                           gerrit_url=GERRIT_URL,
+                           gerrit_url=get_gerrit_url(),
                            gerrit_version=get_version())
 
 
@@ -62,7 +57,7 @@ def login():
                          "user").format(session['username']), category='note')
             return redirect(url_for('index'))
     return render_template('login.html',
-                           gerrit_url=GERRIT_URL,
+                           gerrit_url=get_gerrit_url(),
                            gerrit_version=get_version())
 
 
@@ -106,7 +101,7 @@ def accounts(account_id=None):
         flash(error, category='error')
     return render_template('accounts.html',
                            username=session.get('username'),
-                           gerrit_url=GERRIT_URL,
+                           gerrit_url=get_gerrit_url(),
                            gerrit_version=get_version(),
                            entry_category='accounts',
                            entries=gerrit_accounts,
@@ -130,7 +125,7 @@ def projects(project_name=None):
         flash(error, category='error')
     return render_template('projects.html',
                            username=session.get('username'),
-                           gerrit_url=GERRIT_URL,
+                           gerrit_url=get_gerrit_url(),
                            gerrit_version=get_version(),
                            entry_category='projects',
                            entries=gerrit_projects,
@@ -176,7 +171,7 @@ def groups(group_id=None):
         flash(error, category='error')
     return render_template('groups.html',
                            username=session.get('username'),
-                           gerrit_url=GERRIT_URL,
+                           gerrit_url=get_gerrit_url(),
                            gerrit_version=get_version(),
                            entry_category='groups',
                            entries=gerrit_groups,
@@ -232,7 +227,7 @@ def plugins(plugin_id=None):
         flash(error, category='error')
     return render_template('plugins.html',
                            username=session.get('username'),
-                           gerrit_url=GERRIT_URL,
+                           gerrit_url=get_gerrit_url(),
                            gerrit_version=get_version(),
                            entry_category='plugins',
                            entries=gerrit_plugins,
@@ -240,8 +235,12 @@ def plugins(plugin_id=None):
                            entry_item_name=plugin['id'] if plugin else None)
 
 
+def get_gerrit_url():
+    return app.config.get('GERRIT_URL')
+
+
 def get_connection():
-    return client.connect(GERRIT_URL,
+    return client.connect(get_gerrit_url(),
                           auth_type=session.get('auth_type'),
                           username=session.get('username'),
                           password=session.get('password'))
@@ -251,7 +250,9 @@ def get_version():
     version = None
     try:
         version = client.get_client(
-            'config', connection=client.connect(GERRIT_URL)).get_version()
+            'config',
+            connection=client.connect(get_gerrit_url())
+        ).get_version()
     except requests.ConnectionError as e:
         app.logger.error(e.message)
         flash(e, category='error')
