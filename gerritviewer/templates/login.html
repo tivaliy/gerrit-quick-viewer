@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Sign In{% endblock %}
 {% block body %}
+  <h2>
+    <a href="{{ url_for('index') }}">Gerrit Viewer Panel</a> &#8594; Sign In
+  </h2>
   <p class="note">
     <strong>Note:</strong> Specify your <i>username</i> and <i>password</i> from Gerrit user account (Settings &#8594; HTTP password).
   </p>

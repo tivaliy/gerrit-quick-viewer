@@ -36,6 +36,19 @@ div.wrapper {
     width: 960px;
 }
 
+.header{
+    display: inline-block;
+}
+
+.header h1 {
+    display: inline-block;
+}
+
+.header span{
+    margin-left: 5px;
+    float: right;
+}
+
 .navbar {
     text-align: right;
     font-size: 0.9em;

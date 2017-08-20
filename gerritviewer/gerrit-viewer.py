@@ -34,9 +34,22 @@ def page_not_found(e):
 
 @app.route('/')
 def index():
-    username = session.get('username')
     return render_template('index.html',
-                           username=username,
+                           username=session.get('username'),
+                           gerrit_url=get_gerrit_url(),
+                           gerrit_version=get_version())
+
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if request.method == 'POST':
+        if not request.form['gerrit_url']:
+            flash('URL path to Gerrit server must be specified',
+                  category='error')
+        else:
+            app.config['GERRIT_URL'] = request.form['gerrit_url']
+    return render_template('settings.html',
+                           username=session.get('username'),
                            gerrit_url=get_gerrit_url(),
                            gerrit_version=get_version())
 
@@ -253,7 +266,7 @@ def get_version():
             'server',
             connection=client.connect(get_gerrit_url())
         ).get_version()
-    except requests.ConnectionError as e:
+    except (requests.ConnectionError, client_error.HTTPError) as e:
         app.logger.error(e.message)
         flash(e, category='error')
     return version

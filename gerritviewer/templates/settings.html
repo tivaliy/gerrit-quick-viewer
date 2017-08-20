@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Settings{% endblock %}
+{% block body %}
+  <h2>
+    <a href="{{ url_for('index') }}">Gerrit Viewer Panel</a> &#8594; Settings
+  </h2>
+  <p class="note">
+    <strong>Note:</strong> Specify settings for Gerrit QuickViewer.
+  </p>
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+    <p class="{{ category }}"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
+  {% endfor %}
+  <form action="" method="post" class="form-style">
+    <h2>Gerrit URL path</h2>
+    <dl>
+      <dt>URL path to Gerrit server:</dt>
+      <dd><input type="text" name="gerrit_url" size="30" value="{{ gerrit_url }}"></dd>
+    </dl>
+    <div class="actions"><input type="submit" value="Save"></div>
+  </form>
+{% endblock %}
+
