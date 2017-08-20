@@ -250,7 +250,7 @@ def get_version():
     version = None
     try:
         version = client.get_client(
-            'config',
+            'server',
             connection=client.connect(get_gerrit_url())
         ).get_version()
     except requests.ConnectionError as e:
