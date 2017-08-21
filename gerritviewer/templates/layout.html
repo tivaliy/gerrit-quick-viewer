@@ -35,6 +35,7 @@
       <a href="{{ url_for('logout') }}">log out</a>
     {% endif %}
   </div>
+  {% block submenu %}{% endblock %}
   {% block body %}{% endblock %}
 </div>
 <div class="footer">Powered by <a href="https://github.com/tivaliy/gerrit-quick-viewer">Gerrit QuickViewer</a>,

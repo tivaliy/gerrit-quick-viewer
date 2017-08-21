@@ -1,61 +1,12 @@
 {% extends "index.html" %}
+{% block submenu %}
+  <div class="submenu">
+      <a href="{{ url_for('groups') }}">List Groups</a> |
+      <a href="{{ url_for('groups', action='create') }}">Create New Group</a>
+  </div>
+{% endblock %}
 {% block entries %}
-  {% if entries %}
-    <ul class="entries">
-      <li class="tbl_header">Groups</li>
-      {% for group_name, group_details in entries.items()|sort %}
-        <li>
-          [{{ group_details['group_id'] }}] <a href="{{ url_for('groups', group_id=group_details['group_id']) }}">{{ group_name }}</a>
-          <em>({{ group_details['description'] or '--' }})</em>
-        </li>
-      {% else %}
-        <li><em>No entries here so far</em></li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-  {% if entry_item %}
-    <ul class="entries">
-      <li class="tbl_header">{{ entry_item_name }}</li>
-      {% for k, v in entry_item.items()|sort %}
-        <li>
-          <div class="item">{{ k }}</div>
-          {% if k == "includes"  %}
-            <div class="user-container">
-            {% for i in v %}
-              <div class="dialog">
-                <img src="{{ url_for('static', filename='img/group_icon.png') }}" alt="Gerrit Group">
-                <a href="{{ url_for('groups', group_id=i['group_id']) }}">{{ i['name'] }}</a>
-                &nbsp;<a href="{{ url_for('groups', group_id=entry_item['group_id'], group=i['name'], action='exclude') }}" class="close-icon"></a>
-              </div>
-            {%  else %}
-              --
-            {% endfor %}
-            </div>
-          {% elif k == "members" %}
-            <div class="user-container">
-            {% for i in v %}
-              <div class="dialog">
-                <img src="{{ url_for('static', filename='img/user_icon.png') }}" alt="Gerrit User">
-                {{ i['username'] }}<a href="{{ url_for('groups', group_id=entry_item['group_id'], member=i['username'], action='delete') }}" class="close-icon"></a>
-              </div>
-            {%  else %}
-              --
-            {% endfor %}
-            </div>
-          {% elif k == "owner" %}
-            <img src="{{ url_for('static', filename='img/group_icon.png') }}" alt="Gerrit Group"> <a href="{{ url_for('groups', group_id=v)|urlencode }}">{{ v }}</a>
-          {% else %}
-            {% if v %}<i> {{ v }}</i>{% else %} -- {% endif %}
-          {% endif %}
-        </li>
-      {% endfor %}
-      {% if request.args.get('details') %}
-        <li><a href="{{ url_for('groups', group_id=entry_item['group_id']) }}" class="button">Hide Details</a></li>
-      {% else %}
-        <li><a href="{{ url_for('groups', group_id=entry_item['group_id'], details='1') }}" class="button">Show Details</a></li>
-      {% endif %}
-    </ul>
-  {% else %}
+  {% if request.args.get('action') == 'create' %}
     <form action="" method="post">
       <ul class="entries">
         <li class="tbl_header">Create New Group</li>
@@ -64,5 +15,59 @@
         <li><div class="button"><input type="submit" value="Create"></div></li>
       </ul>
     </form>
+  {% elif entries and not entry_item %}
+      <ul class="entries">
+        <li class="tbl_header">Groups</li>
+        {% for group_name, group_details in entries.items()|sort %}
+          <li>
+            <a href="{{ url_for('groups', group_id=group_details['group_id']) }}">{{ group_name }}</a> [{{ group_details['group_id'] }}]
+            <em>({{ group_details['description'] or '--' }})</em>
+          </li>
+        {% else %}
+          <li><em>No entries here so far</em></li>
+        {% endfor %}
+      </ul>
+  {% elif entry_item %}
+      <ul class="entries">
+        <li class="tbl_header">{{ entry_item_name }}</li>
+        {% for k, v in entry_item.items()|sort %}
+          <li>
+            <div class="item">{{ k }}</div>
+            {% if k == "includes"  %}
+              <div class="user-container">
+              {% for i in v %}
+                <div class="dialog">
+                  <img src="{{ url_for('static', filename='img/group_icon.png') }}" alt="Gerrit Group">
+                  <a href="{{ url_for('groups', group_id=i['group_id']) }}">{{ i['name'] }}</a>
+                  &nbsp;<a href="{{ url_for('groups', group_id=entry_item['group_id'], group=i['name'], action='exclude') }}" class="close-icon"></a>
+                </div>
+              {%  else %}
+                --
+              {% endfor %}
+              </div>
+            {% elif k == "members" %}
+              <div class="user-container">
+              {% for i in v %}
+                <div class="dialog">
+                  <img src="{{ url_for('static', filename='img/user_icon.png') }}" alt="Gerrit User">
+                  {{ i['username'] }}<a href="{{ url_for('groups', group_id=entry_item['group_id'], member=i['username'], action='delete') }}" class="close-icon"></a>
+                </div>
+              {%  else %}
+                --
+              {% endfor %}
+              </div>
+            {% elif k == "owner" %}
+              <img src="{{ url_for('static', filename='img/group_icon.png') }}" alt="Gerrit Group"> <a href="{{ url_for('groups', group_id=v)|urlencode }}">{{ v }}</a>
+            {% else %}
+              {% if v %}<i> {{ v }}</i>{% else %} -- {% endif %}
+            {% endif %}
+          </li>
+        {% endfor %}
+        {% if request.args.get('details') %}
+          <li><a href="{{ url_for('groups', group_id=entry_item['group_id']) }}" class="button">Hide Details</a></li>
+        {% else %}
+          <li><a href="{{ url_for('groups', group_id=entry_item['group_id'], details='1') }}" class="button">Show Details</a></li>
+        {% endif %}
+      </ul>
   {% endif %}
 {% endblock %}
