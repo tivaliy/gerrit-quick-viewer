@@ -11,9 +11,10 @@
 <div class="wrapper">
   <div class="header">
     <h1>
-      <a href="{{ url_for('index') }}">Gerrit QuickViewer</a> - <a href="{{ gerrit_url }}">{{ gerrit_url }} [{{ gerrit_version }}]</a>
+      <a href="{{ url_for('index') }}">Gerrit QuickViewer</a>
     </h1>
     <span>
+      <a href="{{ gerrit_url }}">- {{ gerrit_url }} [{{ gerrit_version }}]</a>
       <a href="{{ url_for('settings') }}">
         <img src="{{ url_for('static', filename='img/edit_icon.png') }}" alt="Change Gerrit server" title="Change Gerrit server">
       </a>

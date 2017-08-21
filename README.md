@@ -14,3 +14,5 @@ Ability to perform *View*, *Modify*, *Delete* or *Create* actions depends on Ger
 6. Set `FLASK_APP` environment variable `export FLASK_APP=gerritviewer/gerrit-viewer.py`.
 7. Run Flask `flask run`
 8. Open Web-browser `http://127.0.0.1:5000/`. Some actions required authorization, so you have to be logged in with your Gerrit HTTP credentials.
+
+Online demo: [https://gerrit-quick-viewer.herokuapp.com/](https://gerrit-quick-viewer.herokuapp.com/)
