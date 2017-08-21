@@ -1,2 +1,3 @@
 Flask
+gunicorn
 git+http://github.com/tivaliy/python-gerritclient.git#egg=python-gerritclient
