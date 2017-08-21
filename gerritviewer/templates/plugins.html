@@ -1,6 +1,24 @@
 {% extends "index.html" %}
+{% block submenu %}
+  <div class="submenu">
+      <a href="{{ url_for('plugins') }}">List Plugins</a> |
+      <a href="{{ url_for('plugins', action='install') }}">Install New Plugin</a>
+  </div>
+{% endblock %}
 {% block entries %}
-  {% if entries %}
+  {% if request.args.get('action') == 'install' %}
+    <form enctype="multipart/form-data" action="" method="post">
+      <ul class="entries">
+        <li class="tbl_header">Install New Plugin</li>
+        <li class="hints">Specify <strong>either</strong> URL <strong>or</strong> local file path to JAR-plugin file</li>
+        <li>URL: <input type="text" name="plugin_url" size="50" value="{{ request.form.plugin_url }}" title="URL to jar file"></li>
+        <li>
+          File: <input type="file" name="file">
+        </li>
+        <li><div class="button"><input type="submit" value="Install"></div></li>
+      </ul>
+    </form>
+  {% elif entries and not entry_item %}
     <ul class="entries">
       <li class="tbl_header">Installed Plugins</li>
       {% for plugin_name, plugin_details in entries.items()|sort %}
@@ -15,8 +33,7 @@
         <li><em>No entries here so far</em></li>
       {% endfor %}
     </ul>
-  {% endif %}
-  {% if entry_item %}
+  {% elif entry_item %}
     <ul class="entries">
       <li class="tbl_header">{{ entry_item_name }}</li>
       {% for k, v in entry_item.items() %}
@@ -34,17 +51,5 @@
         </li>
       {% endif %}
     </ul>
-  {% else %}
-    <form enctype="multipart/form-data" action="" method="post">
-      <ul class="entries">
-        <li class="tbl_header">Install New Plugin</li>
-        <li class="hints">Specify <strong>either</strong> URL <strong>or</strong> local file path to JAR-plugin file</li>
-        <li>URL: <input type="text" name="plugin_url" size="50" value="{{ request.form.plugin_url }}" title="URL to jar file"></li>
-        <li>
-          File: <input type="file" name="file">
-        </li>
-        <li><div class="button"><input type="submit" value="Install"></div></li>
-      </ul>
-    </form>
   {% endif %}
 {% endblock %}
