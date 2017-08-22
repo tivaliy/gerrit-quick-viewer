@@ -40,13 +40,12 @@
   {% if entries %}
     <ul class="entries">
       <li class="tbl_header">Accounts</li>
-      {% for account in entries|sort %}
+      {% for account in entries|sort(attribute='_account_id') %}
         <li>
           <a href="{{ url_for('accounts', account_id=account['_account_id']) }}">
             [{{ account['_account_id'] }}]
-            <strong>{{ account['username'] }}</strong> / {{ account['name'] }}
+            <strong>{{ account['username'] }}</strong> {{ account['name'] }} (<i>{{ account['email'] or '-' }}</i>)
           </a>
-          (<i>{{ account['email'] or '--' }}</i>)
         </li>
       {% else %}
         <li><em>No entries here so far</em></li>
