@@ -43,11 +43,13 @@ def index():
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == 'POST':
-        if not request.form['gerrit_url']:
+        if request.form['gerrit_url']:
+            if get_version(request.form['gerrit_url']):
+                session['gerrit_url'] = request.form['gerrit_url']
+                return redirect(url_for('index'))
+        else:
             flash('URL path to Gerrit server must be specified',
                   category='error')
-        else:
-            app.config['GERRIT_URL'] = request.form['gerrit_url']
     return render_template('settings.html',
                            username=session.get('username'),
                            gerrit_url=get_gerrit_url(),
@@ -249,7 +251,7 @@ def plugins(plugin_id=None):
 
 
 def get_gerrit_url():
-    return app.config.get('GERRIT_URL')
+    return session.get('gerrit_url') or app.config.get('GERRIT_URL')
 
 
 def get_connection():
@@ -259,16 +261,18 @@ def get_connection():
                           password=session.get('password'))
 
 
-def get_version():
+def get_version(url=None):
     version = None
+    gerrit_url = url or get_gerrit_url()
     try:
         version = client.get_client(
             'server',
-            connection=client.connect(get_gerrit_url())
+            connection=client.connect(gerrit_url)
         ).get_version()
-    except (requests.ConnectionError, client_error.HTTPError) as e:
-        app.logger.error(e.message)
-        flash(e, category='error')
+    except (requests.ConnectionError, client_error.HTTPError) as error:
+        app.logger.error(error)
+        flash("Can't establish connection with Gerrit server at '{0}'. "
+              "See logs for more details".format(gerrit_url), category='error')
     return version
 
 
