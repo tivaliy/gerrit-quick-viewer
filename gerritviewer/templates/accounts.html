@@ -1,55 +1,73 @@
 {% extends "index.html" %}
 {% block entries %}
   {% if not entry_item %}
-  <form action="" method="post">
-    <ul class="entries">
-      <li class="tbl_header">Search User Account</li>
-      <li class="hints">Fetch all users (active and inactive) whose name starts from 'John' &#8594; <strong>name:john+(is:inactive OR is:active)</strong></li>
-      <li>Query string:
-        <input type="text" name="query_string" size=80" value="{{ request.form.query_string }}" title="Query string request">
-      </li>
-      <li>
-        <input type="checkbox" name="details" value="enable" title="Fetch detailed accounts info"> Show details
-      </li>
-      <li>
-        <div class="button"><input type="submit" value="Search"></div>
-      </li>
-    </ul>
-  </form>
+    <div class="card">
+      <div class="card-body">
+        <h2>Search User Account</h2>
+        <p class="text-muted">
+          E.g., fetch all users (active and inactive) whose name starts from 'John' &#8594; <strong>name:john+(is:inactive OR is:active)</strong>
+        </p>
+        <form class="pb-4" action="" method="post">
+          <div class="form-group">
+            <label>Query string:
+              <input type="text" name="query_string" size=80" value="{{ request.form.query_string }}" title="Query string request">
+            </label>
+          </div>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" name="details" value="enable" checked>
+              Show details
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        {% if entries %}
+          <table class="table table-striped table-sm">
+            <tbody>
+            {% for account in entries|sort(attribute='_account_id') %}
+              <tr>
+                <th scope="row">{{ account['_account_id'] }}</th>
+                <td>
+                  <a href="{{ url_for('accounts', account_id=account['_account_id']) }}">{{ account['username'] }}</a>
+                </td>
+                <td>
+                  <a href="{{ url_for('accounts', account_id=account['_account_id']) }}">{{ account['name'] }}</a>
+                </td>
+                <td>{{ account['email'] or '--' }}</td>
+              </tr>
+            {% else %}
+              <tr><td><em>No entries here so far</em></td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+      </div>
+    </div>
   {% else %}
-    <ul class="entries">
-      <li class="tbl_header">{{ entry_item_name }}</li>
-      {% for k, v in entry_item.items()|sort %}
-        <li><div class="item">{{ k }}</div>{{ v }}</li>
-      {% endfor %}
-      <li>
+    <div class="card">
+      <div class="card-body">
+        <h2>{{ entry_item_name }}</h2>
+        <table class="table table-striped table-sm">
+          <tbody>
+            {% for k, v in entry_item.items()|sort %}
+              <tr>
+                <th scope="row">{{ k }}</th>
+                <td>{{ v }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
         {% if request.args.get('details') %}
-          <a href="{{ url_for('accounts', account_id=entry_item['_account_id']) }}" class="button">Hide Details</a>
+          <a href="{{ url_for('accounts', account_id=entry_item['_account_id']) }}" class="btn btn-primary" role="button">Hide Details</a>
         {% else %}
-          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], details='1') }}" class="button">Show Details</a>
+          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], details='1') }}" class="btn btn-primary" role="button">Show Details</a>
         {% endif %}
         {% if entry_item['is_active'] %}
-          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='disable') }}" class="button"><span class="marked">Disable</span></a>
+          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='disable') }}" class="btn btn-danger" role="button">Disable</a>
         {% else %}
-          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='enable') }}" class="button">Enable</a>
+          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='enable') }}" class="btn btn-primary" role="button">Enable</a>
         {% endif %}
-      </li>
-    </ul>
-  {% endif %}
-  <br/>
-  {% if entries %}
-    <ul class="entries">
-      <li class="tbl_header">Accounts</li>
-      {% for account in entries|sort(attribute='_account_id') %}
-        <li>
-          <a href="{{ url_for('accounts', account_id=account['_account_id']) }}">
-            [{{ account['_account_id'] }}]
-            <strong>{{ account['username'] }}</strong> {{ account['name'] }} (<i>{{ account['email'] or '-' }}</i>)
-          </a>
-        </li>
-      {% else %}
-        <li><em>No entries here so far</em></li>
-      {% endfor %}
-    </ul>
+      </div>
+    </div>
   {% endif %}
 {% endblock %}
