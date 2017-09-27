@@ -11,7 +11,7 @@
               <th scope="row">{{ k }}</th>
               <td>
                 {% if k == 'web_links' %}
-                  <a href="{{ gerrit_url }}{{ v[0]['url'] }}">{{ v[0]['name'] }}</a>
+                  <a href="{{ v[0]['url'] }}">{{ v[0]['name'] }}</a>
                 {% else %}
                   {{ v }}
                 {% endif %}
@@ -55,7 +55,7 @@
               <td><em>{{ project_details['description'] }}</em></td>
               <td>
                 {% if project_details['web_links'] %}
-                  <a href="{{ gerrit_url }}{{ project_details['web_links'][0]['url'] }}">{{ project_details['web_links'][0]['name'] }}</a>
+                  <a href="{{ project_details['web_links'][0]['url'] }}">{{ project_details['web_links'][0]['name'] }}</a>
                 {% endif %}
               </td>
             </tr>
