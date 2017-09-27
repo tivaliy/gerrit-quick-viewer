@@ -1,16 +1,22 @@
 {% extends "layout.html" %}
 {% block body %}
-  <h2>
-    <a href="{{ url_for('index') }}">Gerrit Viewer Panel</a>
-    {% if entry_category %} &#8594; <a href="{{ url_for(entry_category) }}">{{ entry_category|capitalize }}</a> {% endif %}
-    {% if entry_item %} &#8594; {{ entry_item_name }} {% endif %}
-  </h2>
-  <p class="note">
+  {% if entry_category %}
+    <ol class="breadcrumb p-1 small">
+      <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+      <li class="breadcrumb-item">
+        <a href="{{ url_for(entry_category) }}">{{ entry_category|capitalize }}</a>
+      </li>
+      {% if entry_item %}
+        <li class="breadcrumb-item active"> {{ entry_item_name }}</li>
+      {% endif %}
+    </ol>
+  {% endif %}
+  <p class="alert-info p-2 mt-2">
     <strong>Note:</strong> Ability to perform <i>View</i>, <i>Modify</i>, <i>Delete</i> or <i>Create</i> actions depends on
     <strong> '{% if session.logged_in %}{{ username }}{% else %} anonymous{% endif %}' </strong> access rights.
   </p>
   {% for category, message in get_flashed_messages(with_categories=true) %}
-    <p class="{{ category }}"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
+    <p class="{{ get_category(category) }} p-2 mt-2"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
   {% endfor %}
   <div class="content">{% block entries %}{% endblock %}</div>
 {% endblock %}

@@ -2,6 +2,6 @@
 {% block title %}Page Not Found{% endblock %}
 {% block body %}
   <h2>404 - Page Not Found</h2>
+  {% if error %}<p class="{{ get_category('error') }} p-2 mt-2"><strong>Error:</strong> {{ error }}</p>{% endif %}
   <p>What you were looking for is just not there.</p>
-  {% if error %}<p class="error"><strong>Error:</strong> {{ error }}</p>{% endif %}
 {% endblock %}

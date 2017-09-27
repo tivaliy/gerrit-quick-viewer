@@ -5,42 +5,56 @@
   <title>
     {% block title %} Welcome{% if session.logged_in %} {{ username }}{% endif %}{% endblock %} | Gerrit QuickViewer
   </title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
 </head>
 <body>
-<div class="wrapper">
-  <div class="header">
-    <h1>
-      <a href="{{ url_for('index') }}">Gerrit QuickViewer</a>
-    </h1>
-    <span>
-      <a href="{{ gerrit_url }}">- {{ gerrit_url }} [{{ gerrit_version }}]</a>
-      <a href="{{ url_for('settings') }}">
-        <img src="{{ url_for('static', filename='img/edit_icon.png') }}" alt="Change Gerrit server" title="Change Gerrit server">
-      </a>
-    </span>
-  </div>
-  <div class="navbar">
-    <div class="menu">
-      <a href="{{ url_for('accounts') }}">Accounts</a> |
-      <a href="{{ url_for('projects') }}">Projects</a> |
-      <a href="{{ url_for('groups') }}">Groups</a> |
-      <a href="{{ url_for('plugins') }}">Plugins</a>
+<div class="container">
+  <div class="card border-light pt-4">
+    <div class="card-body">
+      <h1><a class="card-title" href="{{ url_for('index') }}">Gerrit QuickViewer</a></h1>
+      <div class="card-subtitle">
+        <a href="{{ gerrit_url }}">{{ gerrit_url }} [{{ gerrit_version }}]</a>
+        <a href="{{ url_for('settings') }}">
+          <img src="{{ url_for('static', filename='img/edit_icon.png') }}" alt="Change Gerrit server" title="Change Gerrit server">
+        </a>
+      </div>
     </div>
-    Welcome,
-    {% if not session.logged_in %}
-      <strong>anonymous</strong> |
-      <a href="{{ url_for('login') }}">log in</a>
-    {% else %}
-      <strong> {{ username }} </strong> |
-      <a href="{{ url_for('logout') }}">log out</a>
-    {% endif %}
   </div>
+
+  <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light p-0 ">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="{{ url_for('accounts') }}">Accounts</a>
+        <a class="nav-item nav-link" href="{{ url_for('projects') }}">Projects</a>
+        <a class="nav-item nav-link" href="{{ url_for('groups') }}">Groups</a>
+        <a class="nav-item nav-link" href="{{ url_for('plugins') }}">Plugins</a>
+      </div>
+      <div class="pr-2 small">
+        Welcome,&nbsp;
+        {% if not session.logged_in %}
+          <strong>anonymous</strong>&nbsp;|&nbsp;<a href="{{ url_for('login') }}">Sign In</a>
+        {% else %}
+          <strong>{{ username }}</strong>&nbsp;|&nbsp;<a href="{{ url_for('logout') }}">Sign Out</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
   {% block submenu %}{% endblock %}
   {% block body %}{% endblock %}
 </div>
-<div class="footer">Powered by <a href="https://github.com/tivaliy/gerrit-quick-viewer">Gerrit QuickViewer</a>,
-  based on <a href="https://github.com/tivaliy/python-gerritclient">python-gerritclient</a> |
-  Supports <a href="https://www.gerritcodereview.com/releases/2.14.md"><strong>Gerrit Code Review</strong></a> (v2.14.1) | Copyright &copy; 2017. &nbsp</div>
+<footer class="align-bottom text-right">
+  <div class="container">
+    <span class="text-muted small">
+      Powered by <a href="https://github.com/tivaliy/gerrit-quick-viewer">Gerrit QuickViewer</a>,
+      based on <a href="https://github.com/tivaliy/python-gerritclient">python-gerritclient</a> |
+      Supports <a href="https://www.gerritcodereview.com/releases/2.14.md"><strong>Gerrit Code Review</strong></a> (v2.14.1) |
+      Copyright &copy; 2017.
+    </span>
+  </div>
+</footer>
 </body>
 </html>

@@ -1,22 +1,28 @@
 {% extends "layout.html" %}
 {% block title %}Settings{% endblock %}
 {% block body %}
-  <h2>
-    <a href="{{ url_for('index') }}">Gerrit Viewer Panel</a> &#8594; Settings
-  </h2>
-  <p class="note">
+  <ol class="breadcrumb p-1 small">
+    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+    <li class="breadcrumb-item">Settings</li>
+  </ol>
+  <p class="alert-info p-2 mt-2">
     <strong>Note:</strong> Specify settings for Gerrit QuickViewer.
   </p>
   {% for category, message in get_flashed_messages(with_categories=true) %}
-    <p class="{{ category }}"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
+    <p class="{{ get_category(category) }} p-2 mt-2"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
   {% endfor %}
-  <form action="" method="post" class="form-style">
-    <h2>Gerrit URL path</h2>
-    <dl>
-      <dt>URL path to Gerrit server:</dt>
-      <dd><input type="text" name="gerrit_url" size="30" value="{{ gerrit_url }}"></dd>
-    </dl>
-    <div class="actions"><input type="submit" value="Save"></div>
-  </form>
+  <div class="card">
+    <div class="card-body">
+      <h2>Gerrit QuickViewer Settings</h2>
+      <form action="" method="post">
+        <div class="form-group">
+          <label class="text-muted pt-2">URL path to Gerrit server:
+            <input type="text" class="form-control" name="gerrit_url" size="30" value="{{ gerrit_url }}">
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </form>
+    </div>
+  </div>
 {% endblock %}
 

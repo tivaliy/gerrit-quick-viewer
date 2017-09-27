@@ -1,14 +1,15 @@
 {% extends "layout.html" %}
 {% block title %}Sign In{% endblock %}
 {% block body %}
-  <h2>
-    <a href="{{ url_for('index') }}">Gerrit Viewer Panel</a> &#8594; Sign In
-  </h2>
-  <p class="note">
+  <ol class="breadcrumb p-1 small">
+    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+    <li class="breadcrumb-item">Sign In</li>
+  </ol>
+  <p class="alert-info p-2 mt-2">
     <strong>Note:</strong> Specify your <i>username</i> and <i>password</i> from Gerrit user account (Settings &#8594; HTTP password).
   </p>
   {% for category, message in get_flashed_messages(with_categories=true) %}
-    <p class="{{ category }}"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
+    <p class="{{ get_category(category) }} p-2 mt-2"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
   {% endfor %}
   <form action="" method="post" class="form-style">
     <h2>Gerrit HTTP authentication credentials</h2>

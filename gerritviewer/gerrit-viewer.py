@@ -28,6 +28,7 @@ app.config.from_object('config')
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html',
+                           error=e,
                            gerrit_url=get_gerrit_url(),
                            gerrit_version=get_version()), 404
 
@@ -46,6 +47,10 @@ def settings():
         if request.form['gerrit_url']:
             if get_version(request.form['gerrit_url']):
                 session['gerrit_url'] = request.form['gerrit_url']
+                flash(Markup(
+                    "Gerrit server URL path '<strong>{0}</strong>' was "
+                    "successfully saved".format(session['gerrit_url'])),
+                    category='note')
                 return redirect(url_for('index'))
         else:
             flash('URL path to Gerrit server must be specified',
@@ -79,7 +84,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    flash('You were logged out', category='note')
+    flash('You were logged out.', category='note')
     return redirect(url_for('index'))
 
 
@@ -274,6 +279,17 @@ def get_version(url=None):
         flash("Can't establish connection with Gerrit server at '{0}'. "
               "See logs for more details".format(gerrit_url), category='error')
     return version
+
+
+@app.context_processor
+def utility_processor():
+
+    def message_category_mapper(severity_level):
+        category_mapper = {'error': 'alert-danger',
+                           'note': 'alert-info'}
+        return category_mapper[severity_level]
+
+    return dict(get_category=message_category_mapper)
 
 
 if __name__ == '__main__':
