@@ -27,10 +27,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav mr-auto">
-        <a class="nav-item nav-link" href="{{ url_for('accounts') }}">Accounts</a>
-        <a class="nav-item nav-link" href="{{ url_for('projects') }}">Projects</a>
-        <a class="nav-item nav-link" href="{{ url_for('groups') }}">Groups</a>
-        <a class="nav-item nav-link" href="{{ url_for('plugins') }}">Plugins</a>
+        <a class="nav-item nav-link {% if request.url_rule.endpoint == 'accounts' %}active bg-white{% endif %}" href="{{ url_for('accounts') }}">Accounts</a>
+        <a class="nav-item nav-link {% if request.url_rule.endpoint == 'projects' %}active bg-white{% endif %}" href="{{ url_for('projects') }}">Projects</a>
+        <a class="nav-item nav-link {% if request.url_rule.endpoint== 'groups' %}active bg-white{% endif %}" href="{{ url_for('groups') }}">Groups</a>
+        <a class="nav-item nav-link {% if request.url_rule.endpoint == 'plugins' %}active bg-white{% endif %}" href="{{ url_for('plugins') }}">Plugins</a>
       </div>
       <div class="pr-2 small">
         Welcome,&nbsp;
