@@ -1,16 +1,8 @@
 {% extends "index.html" %}
 {% block submenu %}
-  <nav class="navbar navbar-expand-lg navbar-light bg-light p-0 " xmlns="http://www.w3.org/1999/html">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-item nav-link" href="{{ url_for('plugins') }}">List Plugins</a>
-        <a class="nav-item nav-link" href="{{ url_for('plugins', action='install') }}">Install New Plugin</a>
-      </div>
-    </div>
-  </nav>
+  {% with action='install' %}
+    {% include 'includes/submenu.html' %}
+  {% endwith %}
 {% endblock %}
 {% block entries %}
   {% if request.args.get('action') == 'install' %}

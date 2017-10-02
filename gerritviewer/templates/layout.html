@@ -6,6 +6,7 @@
     {% block title %} Welcome{% if session.logged_in %} {{ username }}{% endif %}{% endblock %} | Gerrit QuickViewer
   </title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app.css') }}">
 </head>
 <body>
 <div class="container">

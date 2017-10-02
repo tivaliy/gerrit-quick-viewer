@@ -7,7 +7,7 @@
         <a href="{{ url_for(entry_category) }}">{{ entry_category|capitalize }}</a>
       </li>
       {% if entry_item %}
-        <li class="breadcrumb-item active"> {{ entry_item_name }}</li>
+        <li class="breadcrumb-item"> {{ entry_item_name }}</li>
       {% endif %}
     </ol>
   {% endif %}
@@ -18,5 +18,5 @@
   {% for category, message in get_flashed_messages(with_categories=true) %}
     <p class="{{ get_category(category) }} p-2 mt-2"><strong>{{ category|capitalize }}:</strong> {{ message|safe }}</p>
   {% endfor %}
-  <div class="content">{% block entries %}{% endblock %}</div>
+  {% block entries %}{% endblock %}
 {% endblock %}

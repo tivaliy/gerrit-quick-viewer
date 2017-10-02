@@ -98,14 +98,27 @@ def accounts(account_id=None):
                        'disable': account_client.disable}
     try:
         if request.method == 'POST':
-            gerrit_accounts = account_client.get_all(
-                request.form['query_string'],
-                detailed=True if request.form.getlist('details') else False)
-            flash(Markup(
-                "Search results for <strong>'{}'</strong>: {}".format(
-                    request.form['query_string'],
-                    "Nothing Found" if not gerrit_accounts else '')),
-                  category='note')
+            if 'search_form' in request.form:
+                detailed = True if request.form.getlist('details') else False
+                gerrit_accounts = account_client.get_all(
+                    request.form['query_string'], detailed=detailed)
+                flash(Markup(
+                    "Search results for <strong>'{}'</strong>: {}".format(
+                        request.form['query_string'],
+                        "Nothing Found" if not gerrit_accounts else '')),
+                      category='note')
+            if 'create_form' in request.form:
+                data = {k: v
+                        for k, v in (('username', request.form['username']),
+                                     ('name', request.form['fullname']),
+                                     ('email', request.form['email'])) if v}
+                response = account_client.create(request.form['username'],
+                                                 data=data)
+                msg = Markup("A new user account '<strong>{0}</strong>' "
+                             "with ID={1} was successfully created.".format(
+                              response['username'], response['_account_id']))
+                flash(msg, category='note')
+                return redirect('accounts/{0}'.format(response['_account_id']))
         if account_id:
             account = account_client.get_by_id(
                 account_id, detailed=request.args.get('details', False))
