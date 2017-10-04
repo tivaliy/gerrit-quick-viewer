@@ -3,4 +3,5 @@
 from gerritviewer import app
 
 app = app.create_app('config')
-app.run()
+if __name__ == '__main__':
+    app.run()

@@ -1,1 +1,1 @@
-web: gunicorn gerritviewer.gerrit-viewer:app --log-file=-
+web: gunicorn run:app --log-file=-
