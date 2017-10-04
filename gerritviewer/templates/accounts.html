@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 {% block submenu %}
-  {% with action='create' %}
+  {% with entity='Account', action='create' %}
     {% include 'includes/submenu.html' %}
   {% endwith %}
 {% endblock %}
@@ -66,10 +66,10 @@
               <tr>
                 <th scope="row">{{ account['_account_id'] }}</th>
                 <td>
-                  <a href="{{ url_for('accounts', account_id=account['_account_id']) }}">{{ account['username'] }}</a>
+                  <a href="{{ url_for('accounts.list_accounts', account_id=account['_account_id']) }}">{{ account['username'] }}</a>
                 </td>
                 <td>
-                  <a href="{{ url_for('accounts', account_id=account['_account_id']) }}">{{ account['name'] }}</a>
+                  <a href="{{ url_for('accounts.list_accounts', account_id=account['_account_id']) }}">{{ account['name'] }}</a>
                 </td>
                 <td>{{ account['email'] or '--' }}</td>
               </tr>
@@ -96,14 +96,14 @@
           </tbody>
         </table>
         {% if request.args.get('details') %}
-          <a href="{{ url_for('accounts', account_id=entry_item['_account_id']) }}" class="btn btn-primary" role="button">Hide Details</a>
+          <a href="{{ url_for('accounts.list_accounts', account_id=entry_item['_account_id']) }}" class="btn btn-primary" role="button">Hide Details</a>
         {% else %}
-          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], details='1') }}" class="btn btn-primary" role="button">Show Details</a>
+          <a href="{{ url_for('accounts.list_accounts', account_id=entry_item['_account_id'], details='1') }}" class="btn btn-primary" role="button">Show Details</a>
         {% endif %}
         {% if entry_item['is_active'] %}
-          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='disable') }}" class="btn btn-danger" role="button">Disable</a>
+          <a href="{{ url_for('accounts.list_accounts', account_id=entry_item['_account_id'], action='disable') }}" class="btn btn-danger" role="button">Disable</a>
         {% else %}
-          <a href="{{ url_for('accounts', account_id=entry_item['_account_id'], action='enable') }}" class="btn btn-primary" role="button">Enable</a>
+          <a href="{{ url_for('accounts.list_accounts', account_id=entry_item['_account_id'], action='enable') }}" class="btn btn-primary" role="button">Enable</a>
         {% endif %}
       </div>
     </div>

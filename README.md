@@ -11,8 +11,7 @@ Ability to perform *View*, *Modify*, *Delete* or *Create* actions depends on Ger
 3. Create isolated Python environment `virtualenv gerritquickviewer_venv` and activate it `source gerritquickviewer_venv/bin/activate`.
 4. Install `gerrit-quick-viewer` with all necessary dependencies: `pip install -r requirements.txt`.
 5. Update `config.py` file to meet your requirements, e.g. `GERRIT_URL = 'http://ci.infra.local/gerrit`
-6. Set `FLASK_APP` environment variable `export FLASK_APP=gerritviewer/gerrit-viewer.py`.
-7. Run Flask `flask run`
-8. Open Web-browser `http://127.0.0.1:5000/`. Some actions required authorization, so you have to be logged in with your Gerrit HTTP credentials.
+6. Run Flask `python run.py`
+7. Open Web-browser `http://127.0.0.1:5000/`. Some actions depend on your user access rights and require your Gerrit HTTP credentials.
 
 Online demo: [https://gerrit-quick-viewer.herokuapp.com/](https://gerrit-quick-viewer.herokuapp.com/)

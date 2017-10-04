@@ -1,0 +1,84 @@
+#
+#    Copyright 2017 Vitalii Kulanov
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+
+from flask import Blueprint, flash, Markup, render_template, request, \
+    redirect, session, url_for
+
+from gerritviewer import common
+
+home = Blueprint('home', __name__)
+
+
+@home.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html',
+                           error=e,
+                           gerrit_url=common.get_gerrit_url(),
+                           gerrit_version=common.get_version()), 404
+
+
+@home.route('/')
+def index():
+    return render_template('index.html',
+                           username=session.get('username'),
+                           gerrit_url=common.get_gerrit_url(),
+                           gerrit_version=common.get_version())
+
+
+@home.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        if not request.form['username']:
+            flash('Invalid Username', category='error')
+        elif not request.form['password']:
+            flash('Password field cannot be empty', category='error')
+        else:
+            session['logged_in'] = True
+            session['username'] = request.form['username']
+            session['password'] = request.form['password']
+            session['auth_type'] = request.form['auth_type']
+            flash(Markup("You were logged in as <strong>'{0}'</strong> "
+                         "user").format(session['username']), category='note')
+            return redirect(url_for('home.index'))
+    return render_template('login.html',
+                           gerrit_url=common.get_gerrit_url(),
+                           gerrit_version=common.get_version())
+
+
+@home.route('/logout')
+def logout():
+    session.clear()
+    flash('You were logged out.', category='note')
+    return redirect(url_for('home.index'))
+
+
+@home.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if request.method == 'POST':
+        if request.form['gerrit_url']:
+            if common.get_version(request.form['gerrit_url']):
+                session['gerrit_url'] = request.form['gerrit_url']
+                flash(Markup(
+                    "Gerrit server URL path '<strong>{0}</strong>' was "
+                    "successfully saved".format(session['gerrit_url'])),
+                    category='note')
+                return redirect(url_for('home.index'))
+        else:
+            flash('URL path to Gerrit server must be specified',
+                  category='error')
+    return render_template('settings.html',
+                           username=session.get('username'),
+                           gerrit_url=common.get_gerrit_url(),
+                           gerrit_version=common.get_version())

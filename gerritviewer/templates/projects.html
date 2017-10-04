@@ -50,7 +50,7 @@
                 {% endif %}
               </td>
               <td>
-                <a href="{{ url_for('projects', project_name=project_name) }}">{{ project_name }}</a>
+                <a href="{{ url_for('projects.list_projects', project_name=project_name) }}">{{ project_name }}</a>
               </td>
               <td><em>{{ project_details['description'] }}</em></td>
               <td>
@@ -66,10 +66,10 @@
         </table>
         <div class="text-right">
           {% if request.args.get('skip')|int - 25 >= 0 %}
-            <a class="btn btn-primary" href="{{ url_for('projects', skip=skip_prev) }}" role="button">Previous</a>
+            <a class="btn btn-primary" href="{{ url_for('projects.list_projects', skip=skip_prev) }}" role="button">Previous</a>
           {% endif %}
           {% if entries|length == 25 %}
-            <a class="btn btn-primary" href="{{ url_for('projects', skip=skip_next) }}" role="button">Next</a>
+            <a class="btn btn-primary" href="{{ url_for('projects.list_projects', skip=skip_next) }}" role="button">Next</a>
           {% endif %}
         </div>
       </div>

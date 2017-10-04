@@ -12,10 +12,10 @@
 <div class="container">
   <div class="card border-light pt-4">
     <div class="card-body">
-      <h1><a class="card-title" href="{{ url_for('index') }}">Gerrit QuickViewer</a></h1>
+      <h1><a class="card-title" href="{{ url_for('home.index') }}">Gerrit QuickViewer</a></h1>
       <div class="card-subtitle">
         <a href="{{ gerrit_url }}">{{ gerrit_url }} [{{ gerrit_version }}]</a>
-        <a href="{{ url_for('settings') }}">
+        <a href="{{ url_for('home.settings') }}">
           <img src="{{ url_for('static', filename='img/edit_icon.png') }}" alt="Change Gerrit server" title="Change Gerrit server">
         </a>
       </div>
@@ -28,17 +28,17 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav mr-auto">
-        <a class="nav-item nav-link {% if request.url_rule.endpoint == 'accounts' %}active bg-white{% endif %}" href="{{ url_for('accounts') }}">Accounts</a>
-        <a class="nav-item nav-link {% if request.url_rule.endpoint == 'projects' %}active bg-white{% endif %}" href="{{ url_for('projects') }}">Projects</a>
-        <a class="nav-item nav-link {% if request.url_rule.endpoint== 'groups' %}active bg-white{% endif %}" href="{{ url_for('groups') }}">Groups</a>
-        <a class="nav-item nav-link {% if request.url_rule.endpoint == 'plugins' %}active bg-white{% endif %}" href="{{ url_for('plugins') }}">Plugins</a>
+        <a class="nav-item nav-link {% if 'accounts' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('accounts.list_accounts') }}">Accounts</a>
+        <a class="nav-item nav-link {% if 'projects' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('projects.list_projects') }}">Projects</a>
+        <a class="nav-item nav-link {% if 'groups' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('groups.list_groups') }}">Groups</a>
+        <a class="nav-item nav-link {% if 'plugins' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('plugins.list_plugins') }}">Plugins</a>
       </div>
       <div class="pr-2 small">
         Welcome,&nbsp;
         {% if not session.logged_in %}
-          <strong>anonymous</strong>&nbsp;|&nbsp;<a href="{{ url_for('login') }}">Sign In</a>
+          <strong>anonymous</strong>&nbsp;|&nbsp;<a href="{{ url_for('home.login') }}">Sign In</a>
         {% else %}
-          <strong>{{ username }}</strong>&nbsp;|&nbsp;<a href="{{ url_for('logout') }}">Sign Out</a>
+          <strong>{{ username }}</strong>&nbsp;|&nbsp;<a href="{{ url_for('home.logout') }}">Sign Out</a>
         {% endif %}
       </div>
     </div>

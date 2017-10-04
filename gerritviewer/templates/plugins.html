@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 {% block submenu %}
-  {% with action='install' %}
+  {% with entity='Plugin', action='install' %}
     {% include 'includes/submenu.html' %}
   {% endwith %}
 {% endblock %}
@@ -43,7 +43,7 @@
           {% for plugin_name, plugin_details in entries.items()|sort %}
             <tr>
               <td>
-                <a href="{{ url_for('plugins', plugin_id=plugin_name) }}">{{ plugin_name }}</a>
+                <a href="{{ url_for('plugins.list_plugins', plugin_id=plugin_name) }}">{{ plugin_name }}</a>
               </td>
               <td><em>{{ plugin_details['version'] }}</em></td>
               <td>{{ plugin_details['index_url'] }}</td>
@@ -75,10 +75,10 @@
           </tbody>
         </table>
         {% if entry_item['disabled'] %}
-          <a href="{{ url_for('plugins', plugin_id=entry_item_name, action='enable') }}" class="btn btn-primary" role="button">Enable</a>
+          <a href="{{ url_for('plugins.list_plugins', plugin_id=entry_item_name, action='enable') }}" class="btn btn-primary" role="button">Enable</a>
         {% else %}
-          <a href="{{ url_for('plugins', plugin_id=entry_item_name, action='disable') }}" class="btn btn-danger" role="button">Disable</a>
-          <a href="{{ url_for('plugins', plugin_id=entry_item_name, action='reload') }}" class="btn btn-primary" role="button">Reload</a>
+          <a href="{{ url_for('plugins.list_plugins', plugin_id=entry_item_name, action='disable') }}" class="btn btn-danger" role="button">Disable</a>
+          <a href="{{ url_for('plugins.list_plugins', plugin_id=entry_item_name, action='reload') }}" class="btn btn-primary" role="button">Reload</a>
         {% endif %}
       </div>
     </div>

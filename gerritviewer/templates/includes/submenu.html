@@ -6,10 +6,10 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="{{ url_for(request.url_rule.endpoint) }}">
-          List {{ request.url_rule.endpoint|capitalize }}
+          List {{ entity ~ "s" }}
         </a>
         <a class="nav-item nav-link" href="{{ url_for(request.url_rule.endpoint, action=action) }}">
-          {{ action|capitalize }} New {{ (request.url_rule.endpoint|capitalize)[:-1] }}
+          {{ action|capitalize }} New {{ entity }}
         </a>
       </div>
     </div>

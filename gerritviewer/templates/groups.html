@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 {% block submenu %}
-  {% with action='create' %}
+  {% with entity='Group', action='create' %}
     {% include 'includes/submenu.html' %}
   {% endwith %}
 {% endblock %}
@@ -38,7 +38,7 @@
           {% for group_name, group_details in entries.items()|sort(attribute='1.group_id') %}
             <tr>
               <td class="text-center">{{ group_details['group_id'] }}</td>
-              <td><a href="{{ url_for('groups', group_id=group_details['group_id']) }}">{{ group_name }}</a></td>
+              <td><a href="{{ url_for('groups.list_groups', group_id=group_details['group_id']) }}">{{ group_name }}</a></td>
               <td><em>{{ group_details['description'] or '--' }}</em></td>
               <td>{{ group_details['owner'] }}</td>
               <td class="text-center">
@@ -68,8 +68,8 @@
                     {% for i in v %}
                       <div class="dialog">
                         <img src="{{ url_for('static', filename='img/group_icon.png') }}" alt="Gerrit Group">
-                        <a href="{{ url_for('groups', group_id=i['group_id']) }}">{{ i['name'] }}</a>
-                        &nbsp;<a href="{{ url_for('groups', group_id=entry_item['group_id'], group=i['name'], action='exclude') }}" class="close-icon"></a>
+                        <a href="{{ url_for('groups.list_groups', group_id=i['group_id']) }}">{{ i['name'] }}</a>
+                        &nbsp;<a href="{{ url_for('groups.list_groups', group_id=entry_item['group_id'], group=i['name'], action='exclude') }}" class="close-icon"></a>
                       </div>
                     {% else %}
                       --
@@ -81,7 +81,7 @@
                       <div class="border bg-light float-left mr-2">
                         <img src="{{ url_for('static', filename='img/user_icon.png') }}" alt="Gerrit User">
                         {{ i['username'] }}
-                        <a href="{{ url_for('groups', group_id=entry_item['group_id'], member=i['username'], action='delete') }}" class="close" aria-label="Close" title="Remove user from group">
+                        <a href="{{ url_for('groups.list_groups', group_id=entry_item['group_id'], member=i['username'], action='delete') }}" class="close" aria-label="Close" title="Remove user from group">
                           &times;
                         </a>
                       </div>
@@ -92,7 +92,7 @@
                 {% elif k == "owner" %}
                   <td>
                     <img src="{{ url_for('static', filename='img/group_icon.png') }}" alt="Gerrit Group">
-                    <a href="{{ url_for('groups', group_id=v)|urlencode }}">{{ v }}</a>
+                    <a href="{{ url_for('groups.list_groups', group_id=v)|urlencode }}">{{ v }}</a>
                   </td>
                 {% else %}
                   <td>{% if v %}<i> {{ v }}</i>{% else %} -- {% endif %}</td>
@@ -102,9 +102,9 @@
           </tbody>
         </table>
         {% if request.args.get('details') %}
-          <a href="{{ url_for('groups', group_id=entry_item['group_id']) }}" class="btn btn-primary" role="button">Hide Details</a>
+          <a href="{{ url_for('groups.list_groups', group_id=entry_item['group_id']) }}" class="btn btn-primary" role="button">Hide Details</a>
         {% else %}
-          <a href="{{ url_for('groups', group_id=entry_item['group_id'], details='1') }}" class="btn btn-primary" role="button">Show Details</a>
+          <a href="{{ url_for('groups.list_groups', group_id=entry_item['group_id'], details='1') }}" class="btn btn-primary" role="button">Show Details</a>
         {% endif %}
       </div>
     </div>
