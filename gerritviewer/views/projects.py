@@ -18,9 +18,10 @@ import requests
 from flask import Blueprint, flash, render_template, request, session, \
     current_app
 
-from gerritviewer import common
 from gerritclient import client
 from gerritclient import error as client_error
+
+from gerritviewer import common
 
 projects = Blueprint('projects', __name__)
 
