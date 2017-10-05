@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 
 
 def create_app(config_file):
@@ -19,6 +19,9 @@ def create_app(config_file):
     app.register_blueprint(plugins)
     app.register_blueprint(projects)
 
+    # register error handlers
+    register_errorhandlers(app)
+
     @app.context_processor
     def utility_processor():
         def message_category_mapper(severity_level):
@@ -29,3 +32,12 @@ def create_app(config_file):
         return dict(get_category=message_category_mapper)
 
     return app
+
+
+def register_errorhandlers(app):
+    def render_error(e):
+        return render_template('errors/%s.html' % e.code,
+                               error=e), e.code
+
+    for e in (401, 404, 500):
+        app.errorhandler(e)(render_error)

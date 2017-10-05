@@ -21,14 +21,6 @@ from gerritviewer import common
 home = Blueprint('home', __name__)
 
 
-@home.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html',
-                           error=e,
-                           gerrit_url=common.get_gerrit_url(),
-                           gerrit_version=common.get_version()), 404
-
-
 @home.route('/')
 def index():
     return render_template('index.html',

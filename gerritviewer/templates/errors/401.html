@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}Unauthorized{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block body %}
+  <h2>401 - Unauthorized</h2>
+  {% if error %}<p class="{{ get_category('error') }} p-2 mt-2"><strong>Error:</strong> {{ error }}</p>{% endif %}
+  <p>You're not allowed to do this..</p>
+{% endblock %}

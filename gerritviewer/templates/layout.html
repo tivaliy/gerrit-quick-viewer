@@ -13,12 +13,14 @@
   <div class="card border-light pt-4">
     <div class="card-body">
       <h1><a class="card-title" href="{{ url_for('home.index') }}">Gerrit QuickViewer</a></h1>
+      {% block header %}
       <div class="card-subtitle">
         <a href="{{ gerrit_url }}">{{ gerrit_url }} [{{ gerrit_version }}]</a>
         <a href="{{ url_for('home.settings') }}">
           <img src="{{ url_for('static', filename='img/edit_icon.png') }}" alt="Change Gerrit server" title="Change Gerrit server">
         </a>
       </div>
+      {% endblock %}
     </div>
   </div>
 
