@@ -15,8 +15,8 @@
 
 import requests
 
-from flask import Blueprint, flash, Markup, render_template, request, \
-    redirect, session, current_app
+from flask import Blueprint, current_app, flash, Markup, render_template, \
+    request, redirect
 
 from gerritclient import client
 from gerritclient import error as client_error
@@ -72,7 +72,6 @@ def list_accounts(account_id=None):
         current_app.logger.error(error)
         flash(error, category='error')
     return render_template('accounts.html',
-                           username=session.get('username'),
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='accounts',

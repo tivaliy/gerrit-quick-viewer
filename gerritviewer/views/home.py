@@ -24,7 +24,6 @@ home = Blueprint('home', __name__)
 @home.route('/')
 def index():
     return render_template('index.html',
-                           username=session.get('username'),
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version())
 
@@ -71,6 +70,5 @@ def settings():
             flash('URL path to Gerrit server must be specified',
                   category='error')
     return render_template('settings.html',
-                           username=session.get('username'),
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version())

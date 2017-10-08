@@ -15,8 +15,8 @@
 
 import requests
 
-from flask import Blueprint, flash, redirect, render_template, request, \
-    session, current_app, Markup
+from flask import Blueprint, current_app, flash, Markup, redirect, \
+    render_template, request
 
 from gerritclient import client
 from gerritclient import error as client_error
@@ -64,7 +64,6 @@ def list_groups(group_id=None):
         current_app.logger.error(error)
         flash(error, category='error')
     return render_template('groups.html',
-                           username=session.get('username'),
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='groups',

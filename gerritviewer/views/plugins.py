@@ -15,8 +15,8 @@
 
 import requests
 
-from flask import Blueprint, flash, render_template, request, redirect, \
-    session, current_app, url_for
+from flask import Blueprint, current_app, flash, render_template, request, \
+    redirect, url_for
 
 from gerritclient import client
 from gerritclient import error as client_error
@@ -75,7 +75,6 @@ def list_plugins(plugin_id=None):
         current_app.logger.error(error)
         flash(error, category='error')
     return render_template('plugins.html',
-                           username=session.get('username'),
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='plugins',

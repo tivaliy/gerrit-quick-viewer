@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>
-    {% block title %} Welcome{% if session.logged_in %} {{ username }}{% endif %}{% endblock %} | Gerrit QuickViewer
+    {% block title %} Welcome{% if session.logged_in %} {{ session.username }}{% endif %}{% endblock %} | Gerrit QuickViewer
   </title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app.css') }}">
@@ -40,7 +40,7 @@
         {% if not session.logged_in %}
           <strong>anonymous</strong>&nbsp;|&nbsp;<a href="{{ url_for('home.login') }}">Sign In</a>
         {% else %}
-          <strong>{{ username }}</strong>&nbsp;|&nbsp;<a href="{{ url_for('home.logout') }}">Sign Out</a>
+          <strong>{{ session.username }}</strong>&nbsp;|&nbsp;<a href="{{ url_for('home.logout') }}">Sign Out</a>
         {% endif %}
       </div>
     </div>
