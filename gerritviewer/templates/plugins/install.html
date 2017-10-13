@@ -1,0 +1,28 @@
+{% extends "index.html" %}
+{% block submenu %}
+  {% with entity='Plugin', action='install' %}
+    {% include 'includes/submenu.html' %}
+  {% endwith %}
+{% endblock %}
+{% block entries %}
+  <div class="card">
+    <div class="card-body">
+      <h2>Install New Plugin</h2>
+      <p class="text-muted">Specify <strong>either</strong> URL <strong>or</strong> local path to JAR-plugin file.</p>
+      <form class="form-inline" enctype="multipart/form-data" action="" method="post">
+        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+          <div class="input-group-addon">URL</div>
+          <label>
+            <input type="url" class="form-control" name="plugin_url" size="35" value="{{ request.form.plugin_url }}" placeholder="http://example.com/plugin.jar">
+          </label>
+        </div> or
+        <div class="form-group ml-2">
+          <label>
+            <input type="file" class="form-control-file" name="file">
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Install</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -30,10 +30,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav mr-auto">
-        <a class="nav-item nav-link {% if 'accounts' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('accounts.list_accounts') }}">Accounts</a>
+        <a class="nav-item nav-link {% if 'accounts' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('accounts.fetch') }}">Accounts</a>
         <a class="nav-item nav-link {% if 'projects' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('projects.list_projects') }}">Projects</a>
-        <a class="nav-item nav-link {% if 'groups' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('groups.list_groups') }}">Groups</a>
-        <a class="nav-item nav-link {% if 'plugins' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('plugins.list_plugins') }}">Plugins</a>
+        <a class="nav-item nav-link {% if 'groups' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('groups.fetch') }}">Groups</a>
+        <a class="nav-item nav-link {% if 'plugins' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('plugins.fetch') }}">Plugins</a>
       </div>
       <div class="pr-2 small">
         Welcome,&nbsp;

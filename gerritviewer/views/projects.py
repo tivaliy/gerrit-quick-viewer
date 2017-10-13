@@ -40,7 +40,7 @@ def list_projects(project_name=None):
     except (requests.ConnectionError, client_error.HTTPError) as error:
         current_app.logger.error(error)
         flash(error, category='error')
-    return render_template('projects.html',
+    return render_template('projects/projects.html',
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='projects',

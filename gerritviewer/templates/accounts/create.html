@@ -1,0 +1,34 @@
+{% extends "index.html" %}
+{% block submenu %}
+  {% with entity='Account', action='create' %}
+    {% include 'includes/submenu.html' %}
+  {% endwith %}
+{% endblock %}
+{% block entries %}
+  <div class="card">
+    <div class="card-body">
+      <h2>Create Account</h2>
+      <p class="text-muted">Create a new user account</p>
+      <form action="" method="post">
+        <div class="form-group required">
+          <label class="control-label">Username:
+            <input type="text" class="form-control" name="username" size="30" value="{{ request.form.username }}" placeholder="Enter Username" required>
+          </label>
+        </div>
+        <div class="form-group">
+          <label>Full Name:
+            <input type="text" class="form-control" name="fullname" size="30" value="{{ request.form.fullname }}" placeholder="Enter Full Name">
+          </label>
+        </div>
+        <div class="form-group">
+          <label>e-mail:
+            <input type="email" class="form-control" name="email" size="30" value="{{ request.form.email }}" placeholder="Enter e-email">
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          Create
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

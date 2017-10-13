@@ -5,32 +5,7 @@
   {% endwith %}
 {% endblock %}
 {% block entries %}
-  {% if request.args.get('action') == 'create' %}
-    <div class="card">
-      <div class="card-body">
-        <h2>Create Account</h2>
-        <p class="text-muted">Create a new user account</p>
-        <form action="" method="post">
-          <div class="form-group required">
-            <label class="control-label">Username:
-              <input type="text" class="form-control" name="username" size="30" value="{{ request.form.username }}" placeholder="Enter Username" required>
-            </label>
-          </div>
-          <div class="form-group">
-            <label>Full Name:
-              <input type="text" class="form-control" name="fullname" size="30" value="{{ request.form.fullname }}" placeholder="Enter Full Name">
-            </label>
-          </div>
-          <div class="form-group">
-            <label>e-mail:
-              <input type="email" class="form-control" name="email" size="30" value="{{ request.form.email }}" placeholder="Enter e-email">
-            </label>
-          </div>
-          <button type="submit" name="create_form" class="btn btn-primary">Create</button>
-        </form>
-      </div>
-    </div>
-  {% elif not entry_item %}
+  {% if not entry_item %}
     <div class="card">
       <div class="card-body">
         <h2>Query User Accounts</h2>
@@ -65,13 +40,13 @@
             {% for account in entries|sort(attribute='_account_id') %}
               <tr>
                 <th scope="row">
-                  <a href="{{ url_for('accounts.list_accounts', account_id=account['_account_id']) }}">{{ account['_account_id'] }}</a>
+                  <a href="{{ url_for('accounts.fetch', account_id=account['_account_id']) }}">{{ account['_account_id'] }}</a>
                 </th>
                 <td>
-                  <a href="{{ url_for('accounts.list_accounts', account_id=account['_account_id']) }}">{{ account['username'] }}</a>
+                  <a href="{{ url_for('accounts.fetch', account_id=account['_account_id']) }}">{{ account['username'] }}</a>
                 </td>
                 <td>
-                  <a href="{{ url_for('accounts.list_accounts', account_id=account['_account_id']) }}">{{ account['name'] }}</a>
+                  <a href="{{ url_for('accounts.fetch', account_id=account['_account_id']) }}">{{ account['name'] }}</a>
                 </td>
                 <td>{{ account['email'] or '--' }}</td>
               </tr>
@@ -98,14 +73,14 @@
           </tbody>
         </table>
         {% if request.args.get('details') %}
-          <a href="{{ url_for('accounts.list_accounts', account_id=entry_item['_account_id']) }}" class="btn btn-primary" role="button">Hide Details</a>
+          <a href="{{ url_for('accounts.fetch', account_id=entry_item['_account_id']) }}" class="btn btn-primary" role="button">Hide Details</a>
         {% else %}
-          <a href="{{ url_for('accounts.list_accounts', account_id=entry_item['_account_id'], details='1') }}" class="btn btn-primary" role="button">Show Details</a>
+          <a href="{{ url_for('accounts.fetch', account_id=entry_item['_account_id'], details='1') }}" class="btn btn-primary" role="button">Show Details</a>
         {% endif %}
         {% if entry_item['is_active'] %}
-          <a href="{{ url_for('accounts.list_accounts', account_id=entry_item['_account_id'], action='disable') }}" class="btn btn-danger" role="button">Disable</a>
+          <a href="{{ url_for('accounts.fetch', account_id=entry_item['_account_id'], action='disable') }}" class="btn btn-danger" role="button">Disable</a>
         {% else %}
-          <a href="{{ url_for('accounts.list_accounts', account_id=entry_item['_account_id'], action='enable') }}" class="btn btn-primary" role="button">Enable</a>
+          <a href="{{ url_for('accounts.fetch', account_id=entry_item['_account_id'], action='enable') }}" class="btn btn-primary" role="button">Enable</a>
         {% endif %}
       </div>
     </div>

@@ -5,28 +5,7 @@
   {% endwith %}
 {% endblock %}
 {% block entries %}
-  {% if request.args.get('action') == 'install' %}
-    <div class="card">
-      <div class="card-body">
-        <h2>Install New Plugin</h2>
-        <p class="text-muted">Specify <strong>either</strong> URL <strong>or</strong> local path to JAR-plugin file.</p>
-        <form class="form-inline" enctype="multipart/form-data" action="" method="post">
-          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-            <div class="input-group-addon">URL</div>
-            <label>
-              <input type="url" class="form-control" name="plugin_url" size="35" value="{{ request.form.plugin_url }}" placeholder="http://example.com/plugin.jar">
-            </label>
-          </div>or
-          <div class="form-group ml-2">
-            <label>
-              <input type="file" class="form-control-file" name="file">
-            </label>
-          </div>
-          <button type="submit" class="btn btn-primary">Install</button>
-        </form>
-      </div>
-    </div>
-  {% elif entries and not entry_item %}
+  {% if entries and not entry_item %}
     <div class="card">
       <div class="card-body">
         <h2>Plugins</h2>
@@ -43,7 +22,7 @@
           {% for plugin_name, plugin_details in entries.items()|sort %}
             <tr>
               <td>
-                <a href="{{ url_for('plugins.list_plugins', plugin_id=plugin_name) }}">{{ plugin_name }}</a>
+                <a href="{{ url_for('plugins.fetch', plugin_id=plugin_name) }}">{{ plugin_name }}</a>
               </td>
               <td><em>{{ plugin_details['version'] }}</em></td>
               <td>{{ plugin_details['index_url'] }}</td>
@@ -75,10 +54,10 @@
           </tbody>
         </table>
         {% if entry_item['disabled'] %}
-          <a href="{{ url_for('plugins.list_plugins', plugin_id=entry_item_name, action='enable') }}" class="btn btn-primary" role="button">Enable</a>
+          <a href="{{ url_for('plugins.fetch', plugin_id=entry_item_name, action='enable') }}" class="btn btn-primary" role="button">Enable</a>
         {% else %}
-          <a href="{{ url_for('plugins.list_plugins', plugin_id=entry_item_name, action='disable') }}" class="btn btn-danger" role="button">Disable</a>
-          <a href="{{ url_for('plugins.list_plugins', plugin_id=entry_item_name, action='reload') }}" class="btn btn-primary" role="button">Reload</a>
+          <a href="{{ url_for('plugins.fetch', plugin_id=entry_item_name, action='disable') }}" class="btn btn-danger" role="button">Disable</a>
+          <a href="{{ url_for('plugins.fetch', plugin_id=entry_item_name, action='reload') }}" class="btn btn-primary" role="button">Reload</a>
         {% endif %}
       </div>
     </div>

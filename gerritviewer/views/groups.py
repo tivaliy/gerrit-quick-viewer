@@ -26,17 +26,13 @@ from gerritviewer import common
 groups = Blueprint('groups', __name__)
 
 
-@groups.route('/groups', methods=['GET', 'POST'])
+@groups.route('/groups')
 @groups.route('/groups/<group_id>')
-def list_groups(group_id=None):
+def fetch(group_id=None):
     action = request.args.get('action')
-    gerrit_groups, group, group_name = None, {}, None
+    gerrit_groups, group = None, {}
     group_client = client.get_client('group',
                                      connection=common.get_connection())
-    if request.method == 'POST':
-        group_name = request.form['group_name']
-        if not group_name:
-            flash('Name of group must be specified.', category='error')
     try:
         gerrit_groups = group_client.get_all()
         if group_id:
@@ -55,18 +51,36 @@ def list_groups(group_id=None):
                              "".format(attribute[0], action, group['name'])),
                       category='note')
                 return redirect('groups/{0}?details=1'.format(group_id))
-        if group_name:
-            response = group_client.create(group_name)
-            flash(Markup("Group <strong>'{0}'</strong> was successfully "
-                  "created.".format(response['name'])), category='note')
-            return redirect('groups/{0}'.format(response['group_id']))
     except (requests.ConnectionError, client_error.HTTPError) as error:
         current_app.logger.error(error)
         flash(error, category='error')
-    return render_template('groups.html',
+    return render_template('groups/groups.html',
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='groups',
                            entries=gerrit_groups,
                            entry_item=group,
                            entry_item_name=group.get('name'))
+
+
+@groups.route('/groups/create', methods=['GET', 'POST'])
+def create():
+    if request.method == 'POST':
+        group_client = client.get_client('group',
+                                         connection=common.get_connection())
+        group_name = request.form['group_name']
+        if group_name:
+            try:
+                response = group_client.create(group_name)
+                msg = Markup("Group <strong>'{0}'</strong> was successfully "
+                             "created.".format(response['name']))
+                flash(msg, category='note')
+                return redirect('groups/{0}'.format(response['group_id']))
+            except (requests.ConnectionError, client_error.HTTPError) as error:
+                current_app.logger.error(error)
+                flash(error, category='error')
+        else:
+            flash('Name of group must be specified.', category='error')
+    return render_template('groups/create.html',
+                           gerrit_url=common.get_gerrit_url(),
+                           gerrit_version=common.get_version())

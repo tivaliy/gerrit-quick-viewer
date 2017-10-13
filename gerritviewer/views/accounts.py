@@ -28,7 +28,7 @@ accounts = Blueprint('accounts', __name__)
 
 @accounts.route('/accounts', methods=['GET', 'POST'])
 @accounts.route('/accounts/<account_id>', methods=['GET', 'POST'])
-def list_accounts(account_id=None):
+def fetch(account_id=None):
     action = request.args.get('action')
     gerrit_accounts, account = None, {}
     account_client = client.get_client('account',
@@ -46,18 +46,6 @@ def list_accounts(account_id=None):
                         request.form['query_string'],
                         "Nothing Found" if not gerrit_accounts else '')),
                       category='note')
-            if 'create_form' in request.form:
-                data = {k: v
-                        for k, v in (('username', request.form['username']),
-                                     ('name', request.form['fullname']),
-                                     ('email', request.form['email'])) if v}
-                response = account_client.create(request.form['username'],
-                                                 data=data)
-                msg = Markup("A new user account '<strong>{0}</strong>' "
-                             "with ID={1} was successfully created.".format(
-                              response['username'], response['_account_id']))
-                flash(msg, category='note')
-                return redirect('accounts/{0}'.format(response['_account_id']))
         if account_id:
             account = account_client.get_by_id(
                 account_id, detailed=request.args.get('details', False))
@@ -71,10 +59,35 @@ def list_accounts(account_id=None):
     except (requests.ConnectionError, client_error.HTTPError) as error:
         current_app.logger.error(error)
         flash(error, category='error')
-    return render_template('accounts.html',
+    return render_template('accounts/accounts.html',
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='accounts',
                            entries=gerrit_accounts,
                            entry_item=account,
                            entry_item_name=account.get('name'))
+
+
+@accounts.route('/accounts/create', methods=['GET', 'POST'])
+def create():
+    if request.method == 'POST':
+        account_client = client.get_client('account',
+                                           connection=common.get_connection())
+        data = {k: v
+                for k, v in (('username', request.form['username']),
+                             ('name', request.form['fullname']),
+                             ('email', request.form['email'])) if v}
+        try:
+            response = account_client.create(request.form['username'],
+                                             data=data)
+            msg = Markup("A new user account '<strong>{0}</strong>' "
+                         "with ID={1} was successfully created.".format(
+                          response['username'], response['_account_id']))
+            flash(msg, category='note')
+            return redirect('accounts/{0}'.format(response['_account_id']))
+        except (requests.ConnectionError, client_error.HTTPError) as error:
+                current_app.logger.error(error)
+                flash(error, category='error')
+    return render_template('accounts/create.html',
+                           gerrit_url=common.get_gerrit_url(),
+                           gerrit_version=common.get_version())

@@ -5,10 +5,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" href="{{ url_for(request.url_rule.endpoint) }}">
+        <a class="nav-item nav-link" href="{{ url_for(request.blueprint ~ '.fetch') }}">
           List {{ entity ~ "s" }}
         </a>
-        <a class="nav-item nav-link" href="{{ url_for(request.url_rule.endpoint, action=action) }}">
+        <a class="nav-item nav-link" href="{{ url_for(request.blueprint ~ '.' ~ action) }}">
           {{ action|capitalize }} New {{ entity }}
         </a>
       </div>

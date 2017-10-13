@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block submenu %}
+  {% with entity='Group', action='create' %}
+    {% include 'includes/submenu.html' %}
+  {% endwith %}
+{% endblock %}
+{% block entries %}
+  <div class="card">
+    <div class="card-body">
+      <h2>Create New Group</h2>
+      <p class="text-muted">Create a new group with <strong>default</strong>parameters</p>
+      <form action="" method="post">
+        <div class="form-group">
+          <label>
+            <input type="text" class="form-control" name="group_name" size="30" value="{{ request.form.group_name }}" placeholder="Enter Group name" required>
+          </label>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
