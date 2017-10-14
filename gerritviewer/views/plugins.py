@@ -15,8 +15,8 @@
 
 import requests
 
-from flask import Blueprint, current_app, flash, render_template, request, \
-    redirect, url_for
+from flask import Blueprint, current_app, flash, Markup, render_template, \
+    request, redirect, url_for
 
 from gerritclient import client
 from gerritclient import error as client_error
@@ -26,29 +26,34 @@ from gerritviewer import common
 plugins = Blueprint('plugins', __name__)
 
 
-@plugins.route('/plugins', methods=['GET', 'POST'])
+@plugins.route('/plugins')
 @plugins.route('/plugins/<plugin_id>')
 def fetch(plugin_id=None):
     action = request.args.get('action')
-    gerrit_plugins, plugin = None, None
+    gerrit_plugins = None
     plugin_client = client.get_client('plugin',
                                       connection=common.get_connection())
-    plugin_actions = {'enable': plugin_client.enable,
-                      'disable': plugin_client.disable,
-                      'reload': plugin_client.reload}
     try:
-        gerrit_plugins = plugin_client.get_all(detailed=True)
         if plugin_id:
             plugin = plugin_client.get_by_id(plugin_id)
             if action:
+                plugin_actions = {'enable': plugin_client.enable,
+                                  'disable': plugin_client.disable,
+                                  'reload': plugin_client.reload}
                 plugin_actions[action](plugin_id)
                 action = ('{}d'.format(action)
                           if action[-1] == 'e' else '{}ed'.format(action))
-                msg = "Plugin '{0}' was successfully {1}.".format(plugin_id,
-                                                                  action)
+                msg = Markup("Plugin <strong>'{0}'</strong> was successfully "
+                             "<strong>{1}</strong>.".format(plugin_id, action))
                 flash(msg, category='note')
                 return redirect(url_for('plugins.fetch',
                                         plugin_id=plugin_id))
+            return render_template('plugins/single.html',
+                                   gerrit_url=common.get_gerrit_url(),
+                                   gerrit_version=common.get_version(),
+                                   entry_item=plugin)
+        else:
+            gerrit_plugins = plugin_client.get_all(detailed=True)
     except (requests.ConnectionError, client_error.HTTPError) as error:
         current_app.logger.error(error)
         flash(error, category='error')
@@ -56,9 +61,7 @@ def fetch(plugin_id=None):
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='plugins',
-                           entries=gerrit_plugins,
-                           entry_item=plugin,
-                           entry_item_name=plugin['id'] if plugin else None)
+                           entries=gerrit_plugins)
 
 
 @plugins.route('/plugins/install', methods=['GET', 'POST'])
