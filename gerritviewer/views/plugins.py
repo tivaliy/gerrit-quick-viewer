@@ -51,6 +51,8 @@ def fetch(plugin_id=None):
             return render_template('plugins/single.html',
                                    gerrit_url=common.get_gerrit_url(),
                                    gerrit_version=common.get_version(),
+                                   entry_category='plugins',
+                                   entry_item_name=plugin['id'],
                                    entry_item=plugin)
         else:
             gerrit_plugins = plugin_client.get_all(detailed=True)

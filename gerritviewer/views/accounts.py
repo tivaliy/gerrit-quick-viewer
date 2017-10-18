@@ -56,6 +56,12 @@ def fetch(account_id=None):
                              "successfully <strong>{}d</strong>".format(
                               account_id, action)), category='note')
                 return redirect('accounts/{0}'.format(account_id))
+            return render_template('accounts/single.html',
+                                   gerrit_url=common.get_gerrit_url(),
+                                   gerrit_version=common.get_version(),
+                                   entry_category='accounts',
+                                   entry_item=account,
+                                   entry_item_name=account['name'])
     except (requests.ConnectionError, client_error.HTTPError) as error:
         current_app.logger.error(error)
         flash(error, category='error')
@@ -63,9 +69,7 @@ def fetch(account_id=None):
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='accounts',
-                           entries=gerrit_accounts,
-                           entry_item=account,
-                           entry_item_name=account.get('name'))
+                           entries=gerrit_accounts)
 
 
 @accounts.route('/accounts/create', methods=['GET', 'POST'])

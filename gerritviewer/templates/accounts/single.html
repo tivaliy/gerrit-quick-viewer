@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+{% block submenu %}
+  {% with entity='Account', action='create' %}
+    {% include 'includes/submenu.html' %}
+  {% endwith %}
+{% endblock %}
+{% block entries %}
+  <div class="card">
+    <div class="card-body">
+      <h2>{{ entry_item['name'] }}</h2>
+      <table class="table table-striped table-sm">
+        <tbody>
+        {% for k, v in entry_item.items()|sort %}
+          <tr>
+            <th scope="row">{{ k }}</th>
+            <td>{{ v }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% if request.args.get('details') %}
+        <a href="{{ url_for('accounts.fetch', account_id=entry_item['_account_id']) }}" class="btn btn-primary" role="button">Hide Details</a>
+      {% else %}
+        <a href="{{ url_for('accounts.fetch', account_id=entry_item['_account_id'], details='1') }}" class="btn btn-primary" role="button">Show Details</a>
+      {% endif %}
+      {% if entry_item['is_active'] %}
+        <a href="{{ url_for('accounts.fetch', account_id=entry_item['_account_id'], action='disable') }}" class="btn btn-danger" role="button">Disable</a>
+      {% else %}
+        <a href="{{ url_for('accounts.fetch', account_id=entry_item['_account_id'], action='enable') }}" class="btn btn-primary" role="button">Enable</a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
