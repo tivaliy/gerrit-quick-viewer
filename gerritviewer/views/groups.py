@@ -51,6 +51,12 @@ def fetch(group_id=None):
                              "".format(attribute[0], action, group['name'])),
                       category='note')
                 return redirect('groups/{0}?details=1'.format(group_id))
+            return render_template('groups/single.html',
+                                   gerrit_url=common.get_gerrit_url(),
+                                   gerrit_version=common.get_version(),
+                                   entry_category='groups',
+                                   entry_item=group,
+                                   entry_item_name=group.get('name'))
     except (requests.ConnectionError, client_error.HTTPError) as error:
         current_app.logger.error(error)
         flash(error, category='error')
