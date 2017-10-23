@@ -37,6 +37,12 @@ def list_projects(project_name=None):
                                                  description=True, skip=skip)
         if project_name:
             project = project_client.get_by_name(project_name)
+            return render_template('projects/single.html',
+                                   gerrit_url=common.get_gerrit_url(),
+                                   gerrit_version=common.get_version(),
+                                   entry_category='projects',
+                                   entry_item=project,
+                                   entry_item_name=project.get('name'))
     except (requests.ConnectionError, client_error.HTTPError) as error:
         current_app.logger.error(error)
         flash(error, category='error')
