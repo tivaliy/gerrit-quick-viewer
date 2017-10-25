@@ -50,6 +50,4 @@ def list_projects(project_name=None):
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='projects',
-                           entries=gerrit_projects,
-                           entry_item=project,
-                           entry_item_name=project.get('name'))
+                           entries=gerrit_projects)

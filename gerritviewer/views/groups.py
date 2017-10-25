@@ -64,9 +64,7 @@ def fetch(group_id=None):
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='groups',
-                           entries=gerrit_groups,
-                           entry_item=group,
-                           entry_item_name=group.get('name'))
+                           entries=gerrit_groups)
 
 
 @groups.route('/groups/create', methods=['GET', 'POST'])
