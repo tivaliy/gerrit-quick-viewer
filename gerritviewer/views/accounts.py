@@ -22,6 +22,8 @@ from gerritclient import client
 from gerritclient import error as client_error
 
 from gerritviewer import common
+from .forms import QueryUserAccountForm
+from .forms import CreateUserAccountForm
 
 accounts = Blueprint('accounts', __name__)
 
@@ -29,24 +31,22 @@ accounts = Blueprint('accounts', __name__)
 @accounts.route('/accounts', methods=['GET', 'POST'])
 @accounts.route('/accounts/<account_id>', methods=['GET', 'POST'])
 def fetch(account_id=None):
-    action = request.args.get('action')
+    form = QueryUserAccountForm()
     gerrit_accounts, account = None, {}
     account_client = client.get_client('account',
                                        connection=common.get_connection())
-    account_actions = {'enable': account_client.enable,
-                       'disable': account_client.disable}
     try:
-        if request.method == 'POST':
-            if 'search_form' in request.form:
-                detailed = True if request.form.getlist('details') else False
-                gerrit_accounts = account_client.get_all(
-                    request.form['query_string'], detailed=detailed)
-                flash(Markup(
-                    "Search results for <strong>'{}'</strong>: {}".format(
-                        request.form['query_string'],
-                        "Nothing Found" if not gerrit_accounts else '')),
-                      category='note')
+        if form.validate_on_submit():
+            gerrit_accounts = account_client.get_all(
+                form.query_string.data, detailed=form.details.data)
+            flash(Markup("Search results for <strong>'{}'</strong>: {}".format(
+                    form.query_string.data,
+                    "Nothing Found" if not gerrit_accounts else '')),
+                  category='note')
         if account_id:
+            account_actions = {'enable': account_client.enable,
+                               'disable': account_client.disable}
+            action = request.args.get('action')
             account = account_client.get_by_id(
                 account_id, detailed=request.args.get('details', False))
             account['is_active'] = account_client.is_active(account_id)
@@ -69,21 +69,21 @@ def fetch(account_id=None):
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='accounts',
-                           entries=gerrit_accounts)
+                           entries=gerrit_accounts,
+                           form=form)
 
 
 @accounts.route('/accounts/create', methods=['GET', 'POST'])
 def create():
-    if request.method == 'POST':
+    form = CreateUserAccountForm()
+    if form.validate_on_submit():
         account_client = client.get_client('account',
                                            connection=common.get_connection())
-        data = {k: v
-                for k, v in (('username', request.form['username']),
-                             ('name', request.form['fullname']),
-                             ('email', request.form['email'])) if v}
+        data = {k: v for k, v in (('username', form.username.data),
+                                  ('name', form.fullname.data),
+                                  ('email', form.email.data)) if v}
         try:
-            response = account_client.create(request.form['username'],
-                                             data=data)
+            response = account_client.create(form.username.data, data=data)
             msg = Markup("A new user account '<strong>{0}</strong>' "
                          "with ID={1} was successfully created.".format(
                           response['username'], response['_account_id']))
@@ -94,4 +94,5 @@ def create():
                 flash(error, category='error')
     return render_template('accounts/create.html',
                            gerrit_url=common.get_gerrit_url(),
-                           gerrit_version=common.get_version())
+                           gerrit_version=common.get_version(),
+                           form=form)

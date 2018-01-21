@@ -13,20 +13,13 @@
         'John' &#8594; <strong>name:john+(is:inactive OR is:active)</strong>
       </p>
       <form class="pb-4" action="" method="post">
+        {{ form.hidden_tag() }}
         <div class="form-group required">
-          <label class="control-label">Query string:
-            <input type="text" name="query_string" size=80" value="{{ request.form.query_string }}" required>
-          </label>
+          {{ form.query_string.label(class_="control-label") }} {{ form.query_string(class_="form-control") }}
+          {{ handle_form_errors(form.query_string.errors) }}
         </div>
-        <div class="form-check">
-          <label class="form-check-label">
-            <input type="checkbox" class="form-check-input" name="details" value="enable" checked>
-            Show details
-          </label>
-        </div>
-        <button type="submit" name="search_form" class="btn btn-primary">
-          Search
-        </button>
+        <div class="form-check">{{ form.details() }} {{ form.details.label }}</div>
+        <button type="submit" name="search_form" class="btn btn-primary">Search</button>
       </form>
       {% if entries %}
         <table class="table table-striped table-sm">

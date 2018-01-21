@@ -10,24 +10,21 @@
       <h2>Create Account</h2>
       <p class="text-muted">Create a new user account</p>
       <form action="" method="post">
+        {{ form.hidden_tag() }}
         <div class="form-group required">
-          <label class="control-label">Username:
-            <input type="text" class="form-control" name="username" size="30" value="{{ request.form.username }}" placeholder="Enter Username" required>
-          </label>
+          {{ form.username.label(class_="control-label") }}
+          {{ form.username(class_="form-control", size=30, placeholder="Enter username") }}
+          {{ handle_form_errors(form.username.errors) }}
         </div>
         <div class="form-group">
-          <label>Full Name:
-            <input type="text" class="form-control" name="fullname" size="30" value="{{ request.form.fullname }}" placeholder="Enter Full Name">
-          </label>
+          {{ form.fullname.label(class_="control-label") }}
+          {{ form.username(class_="form-control", size=30, placeholder='Enter Full name') }}
         </div>
         <div class="form-group">
-          <label>e-mail:
-            <input type="email" class="form-control" name="email" size="30" value="{{ request.form.email }}" placeholder="Enter e-email">
-          </label>
+          {{ form.email.label(class_="control-label") }}
+          {{ form.email(class_="form-control", size=30, placeholder='Enter e-mail') }}
         </div>
-        <button type="submit" class="btn btn-primary">
-          Create
-        </button>
+        <button type="submit" class="btn btn-primary">Create</button>
       </form>
     </div>
   </div>
