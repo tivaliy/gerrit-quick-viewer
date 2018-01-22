@@ -1,4 +1,7 @@
 {% extends "index.html" %}
+{% block breadcrumb %}
+  {% include 'includes/breadcrumb.html' %}
+{% endblock %}
 {% block entries %}
   {% if entries is not none %}
     {% set skip_next = request.args.get('skip')|int + 25 %}

@@ -45,7 +45,8 @@ def login():
             return redirect(url_for('home.index'))
     return render_template('login.html',
                            gerrit_url=common.get_gerrit_url(),
-                           gerrit_version=common.get_version())
+                           gerrit_version=common.get_version(),
+                           entry_category='Sign In')
 
 
 @home.route('/logout')
@@ -71,4 +72,5 @@ def settings():
                   category='error')
     return render_template('settings.html',
                            gerrit_url=common.get_gerrit_url(),
-                           gerrit_version=common.get_version())
+                           gerrit_version=common.get_version(),
+                           entry_category='Settings')

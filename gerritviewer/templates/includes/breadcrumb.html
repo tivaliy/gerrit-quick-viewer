@@ -1,0 +1,9 @@
+<ol class="breadcrumb p-1 small">
+  <li class="breadcrumb-item"><a href="{{ url_for('home.index') }}">Home</a></li>
+  <li class="breadcrumb-item">
+    <a href="{{ url_for(request.url_rule.endpoint) }}">{{ entry_category|capitalize }}</a>
+  </li>
+  {% if entry_item %}
+    <li class="breadcrumb-item"> {{ entry_item_name }}</li>
+  {% endif %}
+</ol>
