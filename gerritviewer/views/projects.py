@@ -29,13 +29,14 @@ projects = Blueprint('projects', __name__)
 @projects.route('/projects/<path:project_name>')
 def list_projects(project_name=None):
     skip = request.args.get('skip')
-    gerrit_projects, project = None, {}
+    gerrit_projects = None
     project_client = client.get_client('project',
                                        connection=common.get_connection())
     try:
-        gerrit_projects = project_client.get_all(is_all=True, limit=25,
-                                                 description=True, skip=skip)
-        if project_name:
+        if not project_name:
+            gerrit_projects = project_client.get_all(
+                is_all=True, limit=25, description=True, skip=skip)
+        else:
             project = project_client.get_by_name(project_name)
             return render_template('projects/single.html',
                                    gerrit_url=common.get_gerrit_url(),
