@@ -22,6 +22,7 @@ from gerritclient import client
 from gerritclient import error as client_error
 
 from gerritviewer import common
+from .forms import CreateGroupForm
 
 groups = Blueprint('groups', __name__)
 
@@ -29,7 +30,6 @@ groups = Blueprint('groups', __name__)
 @groups.route('/groups')
 @groups.route('/groups/<group_id>')
 def fetch(group_id=None):
-    action = request.args.get('action')
     gerrit_groups, group = None, {}
     group_client = client.get_client('group',
                                      connection=common.get_connection())
@@ -40,6 +40,7 @@ def fetch(group_id=None):
                 group_id,
                 detailed=request.args.get('details')
             )
+            action = request.args.get('action')
             if action:
                 actions = {'delete': group_client.delete_members,
                            'exclude': group_client.exclude}
@@ -69,22 +70,20 @@ def fetch(group_id=None):
 
 @groups.route('/groups/create', methods=['GET', 'POST'])
 def create():
-    if request.method == 'POST':
+    form = CreateGroupForm()
+    if form.validate_on_submit():
         group_client = client.get_client('group',
                                          connection=common.get_connection())
-        group_name = request.form['group_name']
-        if group_name:
-            try:
-                response = group_client.create(group_name)
-                msg = Markup("Group <strong>'{0}'</strong> was successfully "
-                             "created.".format(response['name']))
-                flash(msg, category='note')
-                return redirect('groups/{0}'.format(response['group_id']))
-            except (requests.ConnectionError, client_error.HTTPError) as error:
-                current_app.logger.error(error)
-                flash(error, category='error')
-        else:
-            flash('Name of group must be specified.', category='error')
+        try:
+            response = group_client.create(form.group_name.data)
+            msg = Markup("Group <strong>'{0}'</strong> was successfully "
+                         "created.".format(response['name']))
+            flash(msg, category='note')
+            return redirect('groups/{0}'.format(response['group_id']))
+        except (requests.ConnectionError, client_error.HTTPError) as error:
+            current_app.logger.error(error)
+            flash(error, category='error')
     return render_template('groups/create.html',
                            gerrit_url=common.get_gerrit_url(),
-                           gerrit_version=common.get_version())
+                           gerrit_version=common.get_version(),
+                           form=form)

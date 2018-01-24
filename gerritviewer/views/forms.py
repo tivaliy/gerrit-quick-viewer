@@ -12,3 +12,7 @@ class CreateUserAccountForm(FlaskForm):
     username = StringField('Username:', validators=[DataRequired()])
     fullname = StringField('Full Name:')
     email = StringField('e-mail:')
+
+
+class CreateGroupForm(FlaskForm):
+    group_name = StringField(validators=[DataRequired()])
