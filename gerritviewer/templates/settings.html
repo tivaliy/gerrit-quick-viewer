@@ -14,10 +14,10 @@
     <div class="card-body">
       <h2>Gerrit QuickViewer Settings</h2>
       <form action="" method="post">
+        {{ form.hidden_tag() }}
         <div class="form-group">
-          <label class="text-muted pt-2">URL path to Gerrit server:
-            <input type="url" class="form-control" name="gerrit_url" size="30" value="{{ gerrit_url }}" required>
-          </label>
+          {{ form.gerrit_url(class_="form-control", value=gerrit_url) }}
+          {{ handle_form_errors(form.gerrit_url.errors) }}
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
       </form>

@@ -16,3 +16,7 @@ class CreateUserAccountForm(FlaskForm):
 
 class CreateGroupForm(FlaskForm):
     group_name = StringField(validators=[DataRequired()])
+
+
+class ConfigureSettingsForm(FlaskForm):
+    gerrit_url = StringField(validators=[DataRequired()])

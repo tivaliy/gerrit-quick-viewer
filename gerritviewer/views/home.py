@@ -17,6 +17,7 @@ from flask import Blueprint, flash, Markup, render_template, request, \
     redirect, session, url_for
 
 from gerritviewer import common
+from .forms import ConfigureSettingsForm
 
 home = Blueprint('home', __name__)
 
@@ -58,19 +59,16 @@ def logout():
 
 @home.route('/settings', methods=['GET', 'POST'])
 def settings():
-    if request.method == 'POST':
-        if request.form['gerrit_url']:
-            if common.get_version(request.form['gerrit_url']):
-                session['gerrit_url'] = request.form['gerrit_url']
-                flash(Markup(
-                    "Gerrit server URL path '<strong>{0}</strong>' was "
-                    "successfully saved".format(session['gerrit_url'])),
-                    category='note')
-                return redirect(url_for('home.index'))
-        else:
-            flash('URL path to Gerrit server must be specified',
-                  category='error')
+    form = ConfigureSettingsForm()
+    if form.validate_on_submit():
+        if common.get_version(form.gerrit_url.data):
+            session['gerrit_url'] = form.gerrit_url.data
+            flash(Markup("Gerrit server URL path '<strong>{0}</strong>' was "
+                         "successfully saved".format(session['gerrit_url'])),
+                  category='note')
+            return redirect(url_for('home.index'))
     return render_template('settings.html',
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
-                           entry_category='Settings')
+                           entry_category='Settings',
+                           form=form)
