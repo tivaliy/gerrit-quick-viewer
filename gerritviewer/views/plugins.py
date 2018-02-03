@@ -13,7 +13,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import os
 import requests
+import urlparse
 
 from flask import Blueprint, current_app, flash, Markup, render_template, \
     request, redirect, url_for
@@ -22,6 +24,7 @@ from gerritclient import client
 from gerritclient import error as client_error
 
 from gerritviewer import common
+from .forms import InstallPluginForm
 
 plugins = Blueprint('plugins', __name__)
 
@@ -68,36 +71,30 @@ def fetch(plugin_id=None):
 
 @plugins.route('/plugins/install', methods=['GET', 'POST'])
 def install():
-    if request.method == 'POST':
+    form = InstallPluginForm()
+    if form.validate_on_submit():
         plugin_client = client.get_client('plugin',
                                           connection=common.get_connection())
-        filename = request.files['file']
-        url_path = request.form['plugin_url']
-        if bool(url_path) == bool(filename):
-            flash('Either URL or path to JAR-plugin file must be specified.',
-                  category='error')
-        else:
-            plugin_name, source_type, value = None, None, None
-            if filename:
-                if filename.filename[-3:].lower() != 'jar':
-                    flash('Plugin file must be of JAR type.', category='error')
-                else:
-                    source_type, value = 'file', filename.stream.read()
-                    plugin_name = filename.filename
-            if url_path:
-                source_type, value = 'url', url_path
-                plugin_name = url_path.split("/")[-1]
-            try:
-                if plugin_name:
-                    resp = plugin_client.install(plugin_name,
-                                                 source_type,
-                                                 value)
-                    msg = "Start installing '{0}' plugin.".format(resp['id'])
-                    flash(msg, category='note')
-                    return redirect('plugins/{0}'.format(resp['id']))
-            except (requests.ConnectionError, client_error.HTTPError) as error:
-                current_app.logger.error(error)
-                flash(error, category='error')
+        plugin_name, source_type, value = None, None, None
+        if form.file.data:
+            source_type, value = 'file', form.file.data.read()
+            plugin_name = form.file.data.filename
+        if form.plugin_url.data:
+            source_type, value = 'url', form.plugin_url.data
+            plugin_name = os.path.basename(
+                urlparse.urlsplit(form.plugin_url.data).path)
+        try:
+            if plugin_name:
+                resp = plugin_client.install(plugin_name,
+                                             source_type,
+                                             value)
+                msg = "Start installing '{0}' plugin.".format(resp['id'])
+                flash(msg, category='note')
+                return redirect('plugins/{0}'.format(resp['id']))
+        except (requests.ConnectionError, client_error.HTTPError) as error:
+            current_app.logger.error(error)
+            flash(error, category='error')
     return render_template('plugins/install.html',
                            gerrit_url=common.get_gerrit_url(),
-                           gerrit_version=common.get_version())
+                           gerrit_version=common.get_version(),
+                           form=form)
