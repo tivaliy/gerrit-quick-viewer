@@ -14,31 +14,25 @@
   <div class="card">
     <div class="card-body">
       <h2>Gerrit HTTP authentication credentials</h2>
-      <form action="" method="post">
-        <div class="form-group required">
-          <label class="control-label">Username
-            <input type="text" class="form-control" name="username" size="30" value="{{ request.form.username }}" required>
-          </label>
-        </div>
-        <div class="form-group required">
-          <label class="control-label">Password
-            <input type="password" class="form-control" name="password" size="30" required>
-          </label>
-        </div>
-        <div class="form-check">
-          <label class="form-check-label">
-            <input class="form-check-input" type="radio" name="auth_type" value="basic" title="HTTP Basic auth method" checked>
-            HTTP Basic
-          </label>
-        </div>
-        <div class="form-check">
-          <label class="form-check-label">
-            <input class="form-check-input" type="radio" name="auth_type" value="digest" title="HTTP Digest auth method">
-            HTTP Digest
-          </label>
-        </div>
-        <button type="submit" class="btn btn-primary">Sign In</button>
-      </form>
+      <div class="w-25">
+        <form action="" method="post">
+          {{ form.hidden_tag() }}
+          <div class="form-group required">
+            {{ form.username.label(class_="control-label") }}
+            {{ form.username(class_="form-control") }}
+            {{ handle_form_errors(form.username.errors) }}
+          </div>
+          <div class="form-group required">
+            {{ form.password.label(class_="control-label") }}
+            {{ form.password(class_="form-control") }}
+            {{ handle_form_errors(form.password.errors) }}
+          </div>
+          <div class="form-check">
+            {{ form.auth_type(class_="list-unstyled") }}
+          </div>
+          <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+      </div>
     </div>
   </div>
 {% endblock %}

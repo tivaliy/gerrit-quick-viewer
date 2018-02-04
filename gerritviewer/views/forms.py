@@ -1,7 +1,8 @@
 import os
 
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, StringField, FileField
+from wtforms import BooleanField, FileField, RadioField, StringField, \
+    PasswordField
 from wtforms.validators import DataRequired, Email, ValidationError
 
 
@@ -48,3 +49,11 @@ class InstallPluginForm(FlaskForm):
             self.plugin_url.errors.append(msg)
             return False
         return True
+
+
+class LoginForm(FlaskForm):
+    username = StringField('Username:', validators=[DataRequired()])
+    password = PasswordField('Password:', validators=[DataRequired()])
+    auth_type = RadioField(choices=[('basic', 'HTTP Basic'),
+                                    ('digest', 'HTTP Digest')],
+                           default='basic')
