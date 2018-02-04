@@ -15,7 +15,11 @@
 
 import os
 import requests
-import urlparse
+
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
 
 from flask import Blueprint, current_app, flash, Markup, render_template, \
     request, redirect, url_for
