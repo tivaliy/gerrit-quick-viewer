@@ -35,7 +35,8 @@ def list_projects(project_name=None):
         if not project_name:
             skip = request.args.get('skip')
             gerrit_projects = project_client.get_all(
-                is_all=True, limit=25, description=True, skip=skip)
+                is_all=True, description=True, skip=skip,
+                limit=current_app.config.get('PROJECTS_PER_PAGE', 25))
         else:
             project = project_client.get_by_name(project_name)
             return render_template('projects/single.html',

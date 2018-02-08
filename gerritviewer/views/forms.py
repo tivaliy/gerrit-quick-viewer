@@ -22,7 +22,7 @@ class CreateGroupForm(FlaskForm):
 
 
 class ConfigureSettingsForm(FlaskForm):
-    gerrit_url = StringField(validators=[DataRequired()])
+    gerrit_url = StringField('Gerrit URL-path:', validators=[DataRequired()])
 
 
 class JARFileRequired(object):

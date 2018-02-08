@@ -15,7 +15,8 @@
       <h2>Gerrit QuickViewer Settings</h2>
       <form action="" method="post">
         {{ form.hidden_tag() }}
-        <div class="form-group">
+        <div class="form-group required">
+          {{ form.gerrit_url.label(class_="control-label") }}
           {{ form.gerrit_url(class_="form-control", value=gerrit_url) }}
           {{ handle_form_errors(form.gerrit_url.errors) }}
         </div>
