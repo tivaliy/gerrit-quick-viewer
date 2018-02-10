@@ -29,10 +29,9 @@ accounts = Blueprint('accounts', __name__)
 
 
 @accounts.route('/accounts', methods=['GET', 'POST'])
-@accounts.route('/accounts/<account_id>', methods=['GET', 'POST'])
-def fetch(account_id=None):
+def fetch():
     form = QueryUserAccountForm()
-    gerrit_accounts, account = None, {}
+    gerrit_accounts = None
     account_client = client.get_client('account',
                                        connection=common.get_connection())
     try:
@@ -43,25 +42,6 @@ def fetch(account_id=None):
                     form.query_string.data,
                     "Nothing Found" if not gerrit_accounts else '')),
                   category='note')
-        if account_id:
-            account_actions = {'enable': account_client.enable,
-                               'disable': account_client.disable}
-            action = request.args.get('action')
-            account = account_client.get_by_id(
-                account_id, detailed=request.args.get('details', False))
-            account['is_active'] = account_client.is_active(account_id)
-            if action:
-                account_actions[action](account_id)
-                flash(Markup("Account with <strong>ID={}</strong> was "
-                             "successfully <strong>{}d</strong>".format(
-                              account_id, action)), category='note')
-                return redirect('accounts/{0}'.format(account_id))
-            return render_template('accounts/single.html',
-                                   gerrit_url=common.get_gerrit_url(),
-                                   gerrit_version=common.get_version(),
-                                   entry_category='accounts',
-                                   entry_item=account,
-                                   entry_item_name=account['name'])
     except (requests.ConnectionError, client_error.HTTPError) as error:
         current_app.logger.error(error)
         flash(error, category='error')
@@ -71,6 +51,30 @@ def fetch(account_id=None):
                            entry_category='accounts',
                            entries=gerrit_accounts,
                            form=form)
+
+
+@accounts.route('/accounts/<account_id>', methods=['GET', 'POST'])
+def fetch_single(account_id=None):
+    account_client = client.get_client('account',
+                                       connection=common.get_connection())
+    account_actions = {'enable': account_client.enable,
+                       'disable': account_client.disable}
+    action = request.args.get('action')
+    account = account_client.get_by_id(
+        account_id, detailed=request.args.get('details', False))
+    account['is_active'] = account_client.is_active(account_id)
+    if action:
+        account_actions[action](account_id)
+        flash(Markup("Account with <strong>ID={}</strong> was "
+                     "successfully <strong>{}d</strong>".format(
+                      account_id, action)), category='note')
+        return redirect('accounts/{0}'.format(account_id))
+    return render_template('accounts/single.html',
+                           gerrit_url=common.get_gerrit_url(),
+                           gerrit_version=common.get_version(),
+                           entry_category='accounts',
+                           entry_item=account,
+                           entry_item_name=account['name'])
 
 
 @accounts.route('/accounts/create', methods=['GET', 'POST'])

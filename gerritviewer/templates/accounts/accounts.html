@@ -38,13 +38,13 @@
           {% for account in entries|sort(attribute='_account_id') %}
             <tr>
               <th scope="row">
-                <a href="{{ url_for('accounts.fetch', account_id=account['_account_id']) }}">{{ account['_account_id'] }}</a>
+                <a href="{{ url_for('accounts.fetch_single', account_id=account['_account_id']) }}">{{ account['_account_id'] }}</a>
               </th>
               <td>
-                <a href="{{ url_for('accounts.fetch', account_id=account['_account_id']) }}">{{ account['username'] }}</a>
+                <a href="{{ url_for('accounts.fetch_single', account_id=account['_account_id']) }}">{{ account['username'] }}</a>
               </td>
               <td>
-                <a href="{{ url_for('accounts.fetch', account_id=account['_account_id']) }}">{{ account['name'] }}</a>
+                <a href="{{ url_for('accounts.fetch_single', account_id=account['_account_id']) }}">{{ account['name'] }}</a>
               </td>
               <td>{{ account['email'] or '--' }}</td>
             </tr>

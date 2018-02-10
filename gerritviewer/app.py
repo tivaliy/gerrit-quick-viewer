@@ -4,6 +4,7 @@ from flask import Flask, render_template
 def create_app(config_file):
     app = Flask(__name__)
     app.config.from_object(config_file)
+    app.url_map.strict_slashes = False
 
     # import blueprints
     from gerritviewer.views.accounts import accounts
