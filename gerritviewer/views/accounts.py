@@ -16,7 +16,7 @@
 import requests
 
 from flask import Blueprint, current_app, flash, Markup, render_template, \
-    request, redirect
+    request, redirect, url_for
 
 from gerritclient import client
 from gerritclient import error as client_error
@@ -55,26 +55,32 @@ def fetch():
 
 @accounts.route('/accounts/<account_id>', methods=['GET', 'POST'])
 def fetch_single(account_id=None):
+    account = {}
     account_client = client.get_client('account',
                                        connection=common.get_connection())
-    account_actions = {'enable': account_client.enable,
-                       'disable': account_client.disable}
-    action = request.args.get('action')
-    account = account_client.get_by_id(
-        account_id, detailed=request.args.get('details', False))
-    account['is_active'] = account_client.is_active(account_id)
-    if action:
-        account_actions[action](account_id)
-        flash(Markup("Account with <strong>ID={}</strong> was "
-                     "successfully <strong>{}d</strong>".format(
-                      account_id, action)), category='note')
-        return redirect('accounts/{0}'.format(account_id))
+    try:
+        account = account_client.get_by_id(
+            account_id, detailed=request.args.get('details', False))
+        account['is_active'] = account_client.is_active(account_id)
+        action = request.args.get('action')
+        if action:
+            account_actions = {'enable': account_client.enable,
+                               'disable': account_client.disable}
+            account_actions[action](account_id)
+            flash(Markup("Account with <strong>ID={}</strong> was "
+                         "successfully <strong>{}d</strong>".format(
+                          account_id, action)), category='note')
+            return redirect(url_for('accounts.fetch_single',
+                                    account_id=account_id))
+    except (requests.ConnectionError, client_error.HTTPError) as error:
+        current_app.logger.error(error)
+        flash(error, category='error')
     return render_template('accounts/single.html',
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='accounts',
                            entry_item=account,
-                           entry_item_name=account['name'])
+                           entry_item_name=account.get('name'))
 
 
 @accounts.route('/accounts/create', methods=['GET', 'POST'])
