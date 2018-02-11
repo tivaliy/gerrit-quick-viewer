@@ -3,7 +3,7 @@ import os
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, FileField, RadioField, StringField, \
     PasswordField
-from wtforms.validators import DataRequired, Email, ValidationError
+from wtforms.validators import DataRequired, Email, Optional, ValidationError
 
 
 class QueryUserAccountForm(FlaskForm):
@@ -14,7 +14,7 @@ class QueryUserAccountForm(FlaskForm):
 class CreateUserAccountForm(FlaskForm):
     username = StringField('Username:', validators=[DataRequired()])
     fullname = StringField('Full Name:')
-    email = StringField('e-mail:', validators=[Email()])
+    email = StringField('e-mail:', validators=[Optional(), Email()])
 
 
 class CreateGroupForm(FlaskForm):

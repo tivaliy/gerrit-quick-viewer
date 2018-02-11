@@ -23,6 +23,7 @@
         <div class="form-group">
           {{ form.email.label(class_="control-label") }}
           {{ form.email(class_="form-control", placeholder='Enter e-mail') }}
+          {{ handle_form_errors(form.email.errors) }}
         </div>
         <button type="submit" class="btn btn-primary">Create</button>
       </form>

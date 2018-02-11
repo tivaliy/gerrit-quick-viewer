@@ -98,7 +98,8 @@ def create():
                          "with ID={1} was successfully created.".format(
                           response['username'], response['_account_id']))
             flash(msg, category='note')
-            return redirect('accounts/{0}'.format(response['_account_id']))
+            return redirect(url_for('accounts.fetch_single',
+                                    account_id=response['_account_id']))
         except (requests.ConnectionError, client_error.HTTPError) as error:
                 current_app.logger.error(error)
                 flash(error, category='error')
