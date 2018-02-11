@@ -1,0 +1,11 @@
+{% extends "accounts/single.html" %}
+{% block item %}
+  <form action="" method="post">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ form.fullname.label(class_="control-label") }}
+      {{ form.fullname(class_="form-control", value=entry_item['name']) }}
+    </div>
+    <button type="submit" class="btn btn-primary">Save changes</button>
+  </form>
+{% endblock %}

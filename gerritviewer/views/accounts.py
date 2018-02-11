@@ -22,8 +22,8 @@ from gerritclient import client
 from gerritclient import error as client_error
 
 from gerritviewer import common
-from .forms import QueryUserAccountForm
-from .forms import CreateUserAccountForm
+from .forms import CreateUserAccountForm, EditContactInfoForm, \
+    QueryUserAccountForm
 
 accounts = Blueprint('accounts', __name__)
 
@@ -53,8 +53,8 @@ def fetch():
                            form=form)
 
 
-@accounts.route('/accounts/<account_id>', methods=['GET', 'POST'])
-def fetch_single(account_id=None):
+@accounts.route('/accounts/<account_id>')
+def fetch_single(account_id):
     account = {}
     account_client = client.get_client('account',
                                        connection=common.get_connection())
@@ -75,12 +75,39 @@ def fetch_single(account_id=None):
     except (requests.ConnectionError, client_error.HTTPError) as error:
         current_app.logger.error(error)
         flash(error, category='error')
-    return render_template('accounts/single.html',
+    return render_template('accounts/profile.html',
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            entry_category='accounts',
                            entry_item=account,
                            entry_item_name=account.get('name'))
+
+
+@accounts.route('/accounts/contact/<account_id>', methods=['GET', 'POST'])
+def edit_contact_info(account_id):
+    form = EditContactInfoForm()
+    account = {}
+    account_client = client.get_client('account',
+                                       connection=common.get_connection())
+    try:
+        account = account_client.get_by_id(account_id, detailed=False)
+        if form.validate_on_submit():
+            response = account_client.set_name(account_id, form.fullname.data)
+            flash(Markup("New name <strong>{0}</strong> was successfully "
+                         "<strong>saved</strong>".format(response)),
+                  category='note')
+            return redirect(url_for('accounts.fetch_single',
+                                    account_id=account_id))
+    except (requests.ConnectionError, client_error.HTTPError) as error:
+        current_app.logger.error(error)
+        flash(error, category='error')
+    return render_template('accounts/contacts.html',
+                           gerrit_url=common.get_gerrit_url(),
+                           gerrit_version=common.get_version(),
+                           entry_category='accounts',
+                           entry_item=account,
+                           entry_item_name=account.get('name'),
+                           form=form)
 
 
 @accounts.route('/accounts/create', methods=['GET', 'POST'])

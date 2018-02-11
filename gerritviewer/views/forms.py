@@ -17,6 +17,10 @@ class CreateUserAccountForm(FlaskForm):
     email = StringField('e-mail:', validators=[Optional(), Email()])
 
 
+class EditContactInfoForm(FlaskForm):
+    fullname = StringField('Full Name:', validators=[DataRequired()])
+
+
 class CreateGroupForm(FlaskForm):
     group_name = StringField(validators=[DataRequired()])
 
