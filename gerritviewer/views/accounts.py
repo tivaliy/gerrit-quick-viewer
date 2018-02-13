@@ -92,10 +92,17 @@ def edit_contact_info(account_id):
     try:
         account = account_client.get_by_id(account_id, detailed=False)
         if form.validate_on_submit():
-            response = account_client.set_name(account_id, form.fullname.data)
-            flash(Markup("New name <strong>{0}</strong> was successfully "
-                         "<strong>saved</strong>".format(response)),
-                  category='note')
+            fullname, username = form.fullname.data, form.username.data
+            if account.get('name') != fullname:
+                response = account_client.set_name(account_id, fullname)
+                flash(Markup("New name <strong>{0}</strong> was successfully "
+                             "<strong>saved</strong>".format(response)),
+                      category='note')
+            if username and account.get('username') != username:
+                response = account_client.set_username(account_id, username)
+                flash(Markup("Username <strong>{0}</strong> was successfully "
+                             "<strong>set</strong>".format(response)),
+                      category='note')
             return redirect(url_for('accounts.fetch_single',
                                     account_id=account_id))
     except (requests.ConnectionError, client_error.HTTPError) as error:
