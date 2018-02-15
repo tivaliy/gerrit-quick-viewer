@@ -62,6 +62,7 @@ def fetch_single(account_id):
         account = account_client.get_by_id(
             account_id, detailed=request.args.get('details', False))
         account['is_active'] = account_client.is_active(account_id)
+        account['membership'] = account_client.get_membership(account_id)
         action = request.args.get('action')
         if action:
             account_actions = {'enable': account_client.enable,
