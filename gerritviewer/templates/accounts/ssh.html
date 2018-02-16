@@ -1,0 +1,26 @@
+{% extends "accounts/single.html" %}
+{% block item %}
+  <h2>SSH Public Keys</h2>
+  <table class="table table-striped table-bordered table-sm">
+    <thead class="bg-info text-white">
+    <tr>
+      <th class="text-center">Valid</th>
+      <th class="text-center">Algorithm</th>
+      <th class="text-center">Key</th>
+      <th class="text-center">Comment</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entry in entries|sort(attribute='seq') %}
+      <tr>
+        <td>{{ entry['valid'] }}</td>
+        <td>{{ entry['algorithm'] }}</td>
+        <td class="is-breakable">{{ entry['ssh_public_key'] }}</td>
+        <td>{{ entry['comment'] }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="text-lg-center"><em>No entries here so far</em></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

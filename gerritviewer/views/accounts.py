@@ -118,6 +118,26 @@ def edit_contact_info(account_id):
                            form=form)
 
 
+@accounts.route('/accounts/ssh/<account_id>')
+def ssh(account_id):
+    account_client = client.get_client('account',
+                                       connection=common.get_connection())
+    account, ssh_keys = {}, []
+    try:
+        account = account_client.get_by_id(account_id, detailed=False)
+        ssh_keys = account_client.get_ssh_keys(account_id)
+    except (requests.ConnectionError, client_error.HTTPError) as error:
+        current_app.logger.error(error)
+        flash(error, category='error')
+    return render_template('accounts/ssh.html',
+                           gerrit_url=common.get_gerrit_url(),
+                           gerrit_version=common.get_version(),
+                           entry_category='accounts',
+                           entry_item=account,
+                           entry_item_name=account.get('name'),
+                           entries=ssh_keys)
+
+
 @accounts.route('/accounts/create', methods=['GET', 'POST'])
 def create():
     form = CreateUserAccountForm()

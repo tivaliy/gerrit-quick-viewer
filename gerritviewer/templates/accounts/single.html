@@ -15,6 +15,7 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item"><a href="{{ url_for('accounts.fetch_single', account_id=entry_item['_account_id']) }}" class="card-link">Profile</a></li>
             <li class="list-group-item"><a href="{{ url_for('accounts.edit_contact_info', account_id=entry_item['_account_id']) }}" class="card-link">Contact Information</a></li>
+            <li class="list-group-item"><a href="{{ url_for('accounts.ssh', account_id=entry_item['_account_id']) }}" class="card-link">SSH Public Keys</a></li>
           </ul>
         </div>
       </div>
