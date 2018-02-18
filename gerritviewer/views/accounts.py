@@ -63,7 +63,7 @@ def fetch_single(account_id):
             account_id, detailed=request.args.get('details', False))
         account['is_active'] = account_client.is_active(account_id)
         account['membership'] = account_client.get_membership(account_id)
-        account['status'] = account_client.get_status(account_id)
+        account['status'] = get_account_status(account_id)
         action = request.args.get('action')
         if action:
             account_actions = {'enable': account_client.enable,
@@ -93,7 +93,7 @@ def edit_contact_info(account_id):
                                        connection=common.get_connection())
     try:
         account = account_client.get_by_id(account_id, detailed=False)
-        current_status = account_client.get_status(account_id)
+        current_status = get_account_status(account_id)
         if form.validate_on_submit():
             fullname, username = form.fullname.data, form.username.data
             status = form.status.data
@@ -104,7 +104,7 @@ def edit_contact_info(account_id):
             if username and account.get('username') != username:
                 response['username'] = account_client.set_username(account_id,
                                                                    username)
-            if status != current_status:
+            if status and status != current_status:
                 response['status'] = account_client.set_status(account_id,
                                                                status)
             if response:
@@ -170,3 +170,15 @@ def create():
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version(),
                            form=form)
+
+
+# Status of account is only available since gerrit 2.14,
+# so we have to fetch it in a proper way for all versions
+def get_account_status(account_id):
+    account_client = client.get_client('account',
+                                       connection=common.get_connection())
+    try:
+        current_status = account_client.get_status(account_id)
+    except client_error.HTTPError:
+        current_status = None
+    return current_status
