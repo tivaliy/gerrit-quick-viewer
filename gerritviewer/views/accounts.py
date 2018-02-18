@@ -63,6 +63,7 @@ def fetch_single(account_id):
             account_id, detailed=request.args.get('details', False))
         account['is_active'] = account_client.is_active(account_id)
         account['membership'] = account_client.get_membership(account_id)
+        account['status'] = account_client.get_status(account_id)
         action = request.args.get('action')
         if action:
             account_actions = {'enable': account_client.enable,
@@ -92,17 +93,24 @@ def edit_contact_info(account_id):
                                        connection=common.get_connection())
     try:
         account = account_client.get_by_id(account_id, detailed=False)
+        current_status = account_client.get_status(account_id)
         if form.validate_on_submit():
             fullname, username = form.fullname.data, form.username.data
+            status = form.status.data
+            response = {}
             if account.get('name') != fullname:
-                response = account_client.set_name(account_id, fullname)
-                flash(Markup("New name <strong>{0}</strong> was successfully "
-                             "<strong>saved</strong>".format(response)),
-                      category='note')
+                response['full name'] = account_client.set_name(account_id,
+                                                                fullname)
             if username and account.get('username') != username:
-                response = account_client.set_username(account_id, username)
-                flash(Markup("Username <strong>{0}</strong> was successfully "
-                             "<strong>set</strong>".format(response)),
+                response['username'] = account_client.set_username(account_id,
+                                                                   username)
+            if status != current_status:
+                response['status'] = account_client.set_status(account_id,
+                                                               status)
+            if response:
+                flash(Markup("The following parameters were successfully "
+                             "updated: {0}".format(", ".join(
+                              ":: ".join(_) for _ in response.items()))),
                       category='note')
             return redirect(url_for('accounts.fetch_single',
                                     account_id=account_id))

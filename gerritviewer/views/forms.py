@@ -20,6 +20,7 @@ class CreateUserAccountForm(FlaskForm):
 class EditContactInfoForm(FlaskForm):
     fullname = StringField('Full Name:', validators=[DataRequired()])
     username = StringField('Username:')
+    status = StringField('Status:')
 
 
 class CreateGroupForm(FlaskForm):

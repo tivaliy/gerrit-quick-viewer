@@ -14,6 +14,10 @@
       {% endif %}
       {{ form.username(class_="form-control", value=entry_item['username'], readonly=True if entry_item['username'] else False) }}
     </div>
+    <div class="form-group">
+      {{ form.status.label(class_="control-label") }}
+      {{ form.status(class_="form-control", value=entry_item['status']) }}
+    </div>
     <button type="submit" class="btn btn-primary">Save changes</button>
   </form>
 {% endblock %}
