@@ -24,7 +24,7 @@ home = Blueprint('home', __name__)
 
 @home.route('/')
 def index():
-    return render_template('index.html',
+    return render_template('main.html',
                            gerrit_url=common.get_gerrit_url(),
                            gerrit_version=common.get_version())
 

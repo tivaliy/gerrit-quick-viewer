@@ -30,6 +30,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link {% if 'home' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('home.index') }}">Home</a>
         <a class="nav-item nav-link {% if 'accounts' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('accounts.fetch') }}">Accounts</a>
         <a class="nav-item nav-link {% if 'projects' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('projects.list_projects') }}">Projects</a>
         <a class="nav-item nav-link {% if 'groups' in request.url_rule.endpoint %}active bg-white{% endif %}" href="{{ url_for('groups.fetch') }}">Groups</a>
@@ -56,7 +57,7 @@
       Powered by <a href="https://github.com/tivaliy/gerrit-quick-viewer">Gerrit QuickViewer</a>,
       based on <a href="https://github.com/tivaliy/python-gerritclient">python-gerritclient</a> |
       Supports <a href="https://www.gerritcodereview.com/releases/2.14.md"><strong>Gerrit Code Review</strong></a> (v2.14.1) |
-      Copyright &copy; 2017.
+      Copyright &copy; 2017 - 2018.
     </span>
   </div>
 </footer>

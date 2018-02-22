@@ -1,0 +1,57 @@
+{% extends "index.html" %}
+{% block entries %}
+  <div class="row mb-5">
+    <div class="col-sm-3">
+      <div class="card">
+        <div class="card-header">Accounts Dashboard</div>
+        <div class="card-body">
+          <h4 class="card-title">Accounts</h4>
+          <p class="card-text">Manage User Accounts in Gerrit Code Review.</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><a href="{{ url_for('accounts.fetch') }}">Query Accounts</a></li>
+          <li class="list-group-item"><a href="{{ url_for('accounts.create') }}">Create New Account</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="card">
+        <div class="card-header">Projects Dashboard</div>
+        <div class="card-body">
+          <h4 class="card-title">Projects</h4>
+          <p class="card-text">Manage Projects in Gerrit Code Review.</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><a href="{{ url_for('projects.list_projects') }}">List Projects</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="card">
+        <div class="card-header">Groups Dashboard</div>
+        <div class="card-body">
+          <h4 class="card-title">Groups</h4>
+          <p class="card-text">Manage Groups in Gerrit Code Review.</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><a href="{{ url_for('groups.fetch') }}">List Groups</a></li>
+          <li class="list-group-item"><a href="{{ url_for('groups.create') }}">Create New Group</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="card">
+        <div class="card-header">Plugins Dashboard</div>
+        <div class="card-body">
+          <h4 class="card-title">Plugins</h4>
+          <p class="card-text">Manage Plugins in Gerrit Code Review.</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><a href="{{ url_for('plugins.fetch') }}">List Plugins</a></li>
+          <li class="list-group-item"><a href="{{ url_for('plugins.install') }}">Install New Plugin</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
