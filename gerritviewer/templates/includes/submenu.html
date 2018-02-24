@@ -1,17 +1,6 @@
 {% block submenu %}
-  <nav class="navbar navbar-expand-lg navbar-light bg-light p-0">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-item nav-link {% if action not in request.url_rule.endpoint %}active{% endif %}" href="{{ url_for(request.blueprint ~ '.fetch') }}">
-          List {{ entity ~ "s" }}
-        </a>
-        <a class="nav-item nav-link {% if action in request.url_rule.endpoint %}active{% endif %}" href="{{ url_for(request.blueprint ~ '.' ~ action) }}">
-          {{ action|capitalize }} New {{ entity }}
-        </a>
-      </div>
-    </div>
+  <nav class="nav nav-pills ">
+    <a class="nav-link" href="{{ url_for(request.blueprint ~ '.fetch') }}">List {{ entity ~ "s" }}</a>
+    <a class="nav-link" href="{{ url_for(request.blueprint ~ '.' ~ action) }}">{{ action|capitalize }} New {{ entity }}</a>
   </nav>
 {% endblock %}
