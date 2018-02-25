@@ -1,9 +1,12 @@
 import os
 
 from flask_wtf import FlaskForm
+from pkg_resources import parse_version
 from wtforms import BooleanField, FileField, RadioField, StringField, \
     PasswordField
 from wtforms.validators import DataRequired, Email, Optional, ValidationError
+
+from gerritviewer import common
 
 
 class QueryUserAccountForm(FlaskForm):
@@ -17,10 +20,35 @@ class CreateUserAccountForm(FlaskForm):
     email = StringField('e-mail:', validators=[Optional(), Email()])
 
 
+class VersionCompatibility(object):
+    """
+    Validates Gerrit version compatibility.
+
+    :param version: Gerrit version (as a string) to be compared
+    :param message: Error message to raise in case of a validation error.
+    """
+
+    def __init__(self, version, message=None):
+        self.message = message
+        self.version = version
+
+    def __call__(self, form, field):
+        if field.data:
+            curr_version = common.get_version()
+            if parse_version(curr_version) <= parse_version(self.version):
+                message = self.message
+                if message is None:
+                    message = field.gettext(
+                        'This feature supports in Gerrit since version '
+                        '{0}'.format(self.version)
+                    )
+                raise ValidationError(message)
+
+
 class EditContactInfoForm(FlaskForm):
     fullname = StringField('Full Name:', validators=[DataRequired()])
     username = StringField('Username:')
-    status = StringField('Status:')
+    status = StringField('Status:', validators=[VersionCompatibility('2.14')])
 
 
 class CreateGroupForm(FlaskForm):

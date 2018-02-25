@@ -63,7 +63,6 @@ def fetch_single(account_id):
             account_id, detailed=request.args.get('details', False))
         account['is_active'] = account_client.is_active(account_id)
         account['membership'] = account_client.get_membership(account_id)
-        account['status'] = get_account_status(account_id)
         action = request.args.get('action')
         if action:
             account_actions = {'enable': account_client.enable,
@@ -104,9 +103,9 @@ def edit_contact_info(account_id):
             if username and account.get('username') != username:
                 response['username'] = account_client.set_username(account_id,
                                                                    username)
-            if status and status != current_status:
+            if status != current_status:
                 response['status'] = account_client.set_status(account_id,
-                                                               status)
+                                                               status) or ''
             if response:
                 flash(Markup("The following parameters were successfully "
                              "updated: {0}".format(", ".join(
